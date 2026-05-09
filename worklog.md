@@ -33,3 +33,29 @@ Stage Summary:
 - Routing feature: auto-detect location, manual input, route line on map, Google Maps navigation
 - Leaflet map working with proper CSS, markers, user location, and route lines
 - All 37 BSPS data entries accessible via JSON-based API
+
+---
+Task ID: 8
+Agent: Main Agent
+Task: Mobile responsiveness, Google Maps/Satellite layers, GitHub push
+
+Work Log:
+- Rewrote page.tsx for full mobile responsiveness:
+  - Mobile: toggle between Map and List views via header button
+  - Mobile: full-screen detail dialog with scrollable content (documentation, navigation, all info)
+  - Desktop: unchanged sidebar layout
+  - Removed drawer-based mobile view, replaced with Dialog for detail view
+  - Responsive sizing throughout (text, padding, icons scale with sm: breakpoints)
+- Added Google Maps/Satellite/Hybrid tile layers to MapComponent:
+  - OpenStreetMap (default), Google Maps, Google Satellite, Google Hybrid
+  - Leaflet L.control.layers with collapsed toggle on top-right
+  - Custom CSS styling for layer control in globals.css
+- Styled layer control with proper CSS overrides in globals.css
+- Pushed to GitHub: https://github.com/ujangsupriatna2/bsps-dashboard-paseh
+- Removed .env from git tracking for security (ACCESS_CODE should be set as Vercel env variable)
+
+Stage Summary:
+- Mobile fully responsive with map/list toggle and full detail dialog
+- 4 map tile layers: OSM, Google Maps, Satellite, Hybrid (all with markers)
+- Repository pushed to GitHub
+- .env removed from git for security
