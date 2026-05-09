@@ -16,10 +16,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Dashboard Pemetaan BSPS - Kecamatan Paseh",
   description: "Dashboard pemetaan penerima bantuan BSPS di Kecamatan Paseh, Desa Loa, Kabupaten Bandung",
-  keywords: ["BSPS", "Pemetaan", "Paseh", "Loa", "Bantuan Sosial"],
-  authors: [{ name: "BSPS Dashboard" }],
+  keywords: ["BSPS", "Pemetaan", "Paseh", "Loa", "Bantuan Sosial", "Perumahan"],
+  authors: [{ name: "Kementerian Perumahan dan Kawasan Permukiman" }],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png", sizes: "64x64" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
+    ],
   },
 };
 

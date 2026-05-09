@@ -164,9 +164,7 @@ function PasscodeScreen({ onAccess }: { onAccess: () => void }) {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center shadow-xl mx-auto mb-4">
-            <Building2 className="w-10 h-10 text-white" />
-          </div>
+          <img src="/favicon.svg" alt="BSPS" className="w-20 h-20 rounded-2xl shadow-xl mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900">Dashboard BSPS</h1>
           <p className="text-sm text-gray-500 mt-1">Pemetaan Bantuan Stimulan Perumahan Swadaya</p>
           <p className="text-xs text-gray-400 mt-0.5">Kecamatan Paseh · Desa Loa · Kabupaten Bandung</p>
@@ -925,9 +923,7 @@ export default function DashboardPage() {
         <div className="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center shadow-md">
-                <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-              </div>
+              <img src="/favicon.svg" alt="BSPS" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl shadow-md" />
               <div>
                 <h1 className="text-sm sm:text-xl font-bold text-gray-900">Dashboard BSPS</h1>
                 <p className="text-[10px] sm:text-sm text-gray-500">Kecamatan Paseh · Desa Loa</p>
