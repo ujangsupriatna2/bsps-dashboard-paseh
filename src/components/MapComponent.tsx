@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import L from 'leaflet';
 
 export interface MapMarker {
@@ -216,9 +216,41 @@ export default function MapComponent({
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // ─── Tile Layers ────────────────────────────────────────────
+    const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       maxZoom: 19,
+    });
+
+    const googleMapsLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      attribution: '&copy; Google Maps',
+      maxZoom: 20,
+    });
+
+    const googleSatelliteLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+      attribution: '&copy; Google Satellite',
+      maxZoom: 20,
+    });
+
+    const googleHybridLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+      attribution: '&copy; Google Hybrid',
+      maxZoom: 20,
+    });
+
+    // Default base layer
+    osmLayer.addTo(map);
+
+    // Layer control with custom styling
+    const baseLayers: Record<string, L.TileLayer> = {
+      '🗺️ Peta Jalan': osmLayer,
+      '📍 Google Maps': googleMapsLayer,
+      '🛰️ Satelit': googleSatelliteLayer,
+      '🗺️🛰️ Hybrid': googleHybridLayer,
+    };
+
+    L.control.layers(baseLayers, undefined, {
+      position: 'topright',
+      collapsed: true,
     }).addTo(map);
 
     mapRef.current = map;
@@ -302,7 +334,6 @@ export default function MapComponent({
     const map = mapRef.current;
     if (!map || !mapReady) return;
 
-    // Remove existing user marker
     if (userMarkerRef.current) {
       map.removeLayer(userMarkerRef.current);
       userMarkerRef.current = null;
@@ -336,7 +367,6 @@ export default function MapComponent({
     const map = mapRef.current;
     if (!map || !mapReady) return;
 
-    // Remove existing route
     if (routeLineRef.current) {
       map.removeLayer(routeLineRef.current);
       routeLineRef.current = null;
@@ -360,7 +390,6 @@ export default function MapComponent({
       routeLine.addTo(map);
       routeLineRef.current = routeLine;
 
-      // Fit bounds to show both points
       const bounds = L.latLngBounds(routeCoords);
       map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 });
     }

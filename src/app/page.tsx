@@ -25,6 +25,7 @@ import {
   ChevronRight, ChevronDown, Building2,
   CheckCircle2, Clock, XCircle, Camera, X, ImageOff,
   Navigation, LocateFixed, Route, ExternalLink, Lock, ShieldCheck,
+  ArrowLeft, List, Map,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -162,23 +163,15 @@ function PasscodeScreen({ onAccess }: { onAccess: () => void }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center shadow-xl mx-auto mb-4">
             <Building2 className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Dashboard BSPS
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Pemetaan Bantuan Stimulan Perumahan Swadaya
-          </p>
-          <p className="text-xs text-gray-400 mt-0.5">
-            Kecamatan Paseh · Desa Loa · Kabupaten Bandung
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard BSPS</h1>
+          <p className="text-sm text-gray-500 mt-1">Pemetaan Bantuan Stimulan Perumahan Swadaya</p>
+          <p className="text-xs text-gray-400 mt-0.5">Kecamatan Paseh · Desa Loa · Kabupaten Bandung</p>
         </div>
 
-        {/* Card */}
         <Card className="shadow-xl border-gray-200">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-5">
@@ -251,7 +244,7 @@ function PhotoGrid({
 }) {
   if (loading) {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i} className="aspect-[4/3] rounded-lg bg-gray-100 animate-pulse" />
         ))}
@@ -260,7 +253,7 @@ function PhotoGrid({
   }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
       {photos.map((photo) => (
         <div key={photo.key} className="flex flex-col items-center gap-1">
           {photo.exists && photo.url ? (
@@ -300,7 +293,6 @@ function DetailPanel({
   dokumentasi,
   dokLoading,
   onPhotoClick,
-  compact = false,
   onNavigate,
   userLocation,
 }: {
@@ -308,7 +300,6 @@ function DetailPanel({
   dokumentasi: DokumentasiData | null;
   dokLoading: boolean;
   onPhotoClick: (photo: DokumentasiPhoto) => void;
-  compact?: boolean;
   onNavigate: (entry: BspsEntry) => void;
   userLocation: { lat: number; lng: number } | null;
 }) {
@@ -320,7 +311,7 @@ function DetailPanel({
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className={cn('font-bold text-gray-900 truncate', compact ? 'text-sm' : 'text-base')}>
+          <h3 className="font-bold text-gray-900 text-base">
             {entry.nama}
           </h3>
           {entry.keterangan && (
@@ -328,12 +319,7 @@ function DetailPanel({
           )}
         </div>
         <Badge
-          className={cn(
-            'text-[10px] shrink-0',
-            config?.bgColor,
-            config?.color,
-            config?.borderColor,
-          )}
+          className={cn('text-[10px] shrink-0', config?.bgColor, config?.color, config?.borderColor)}
           variant="outline"
         >
           {config?.label}
@@ -390,7 +376,7 @@ function DetailPanel({
           onClick={() => onNavigate(entry)}
         >
           <Route className="w-3.5 h-3.5 mr-1.5" />
-          {userLocation ? 'Tampilkan Rute di Peta' : 'Tampilkan Rute di Peta'}
+          Tampilkan Rute di Peta
         </Button>
         <a
           href={gmapsUrl}
@@ -433,12 +419,10 @@ function DetailPanel({
 function DataListItem({
   item,
   isSelected,
-  isExpanded,
   onSelect,
 }: {
   item: BspsEntry;
   isSelected: boolean;
-  isExpanded: boolean;
   onSelect: (id: string) => void;
 }) {
   const config = KATEGORI_CONFIG[item.kategori];
@@ -447,9 +431,7 @@ function DataListItem({
       className={cn(
         'p-3 rounded-lg cursor-pointer transition-all duration-150',
         'hover:bg-gray-50 border border-transparent',
-        isSelected
-          ? `${config?.bgColor} ${config?.borderColor} border`
-          : '',
+        isSelected ? `${config?.bgColor} ${config?.borderColor} border` : '',
       )}
       onClick={() => onSelect(item.id)}
     >
@@ -460,9 +442,7 @@ function DataListItem({
             style={{ backgroundColor: MARKER_COLORS[item.kategori] }}
           />
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">
-              {item.nama}
-            </p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{item.nama}</p>
             <p className="text-xs text-gray-500 truncate">
               {item.alamat || `${item.desa}, ${item.kecamatan}`}
             </p>
@@ -470,21 +450,12 @@ function DataListItem({
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">
           <Badge
-            className={cn(
-              'text-[9px] px-1.5 py-0',
-              config?.bgColor,
-              config?.color,
-              config?.borderColor,
-            )}
+            className={cn('text-[9px] px-1.5 py-0', config?.bgColor, config?.color, config?.borderColor)}
             variant="outline"
           >
             {config?.label}
           </Badge>
-          {isExpanded ? (
-            <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-          ) : (
-            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-          )}
+          <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
         </div>
       </div>
     </div>
@@ -514,8 +485,9 @@ export default function DashboardPage() {
   const [photoDialogOpen, setPhotoDialogOpen] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<DokumentasiPhoto | null>(null);
 
-  // Mobile drawer state
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  // Mobile view state - 'map' | 'list' | 'detail'
+  const [mobileView, setMobileView] = useState<'map' | 'list'>('map');
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
 
   // Location & routing state
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -559,9 +531,7 @@ export default function DashboardPage() {
   }, [activeFilter, searchQuery]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchData();
-    }
+    if (isAuthenticated) fetchData();
   }, [fetchData, isAuthenticated]);
 
   // Fetch documentation when selected
@@ -570,7 +540,6 @@ export default function DashboardPage() {
       setDokumentasi(null);
       return;
     }
-
     const fetchDok = async () => {
       setDokLoading(true);
       try {
@@ -584,18 +553,13 @@ export default function DashboardPage() {
         setDokLoading(false);
       }
     };
-
     fetchDok();
   }, [selectedId]);
 
   const handleSelect = useCallback((id: string) => {
-    setSelectedId((prev) => (prev === id ? null : id));
-    setRouteTarget(null); // Clear route when selecting new item
-  }, []);
-
-  const handleMobileSelect = useCallback((id: string) => {
     setSelectedId(id);
-    setMobileDrawerOpen(true);
+    setRouteTarget(null);
+    setMobileDetailOpen(true);
   }, []);
 
   const handlePhotoClick = useCallback((photo: DokumentasiPhoto) => {
@@ -609,16 +573,11 @@ export default function DashboardPage() {
       setLocationError('Geolokasi tidak didukung oleh browser Anda');
       return;
     }
-
     setLocating(true);
     setLocationError(null);
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
+        setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
         setLocating(false);
         setManualLat(position.coords.latitude.toString());
         setManualLng(position.coords.longitude.toString());
@@ -643,7 +602,6 @@ export default function DashboardPage() {
     );
   }, []);
 
-  // Set manual location
   const setManualLocation = useCallback(() => {
     const lat = parseFloat(manualLat);
     const lng = parseFloat(manualLng);
@@ -655,12 +613,10 @@ export default function DashboardPage() {
     }
   }, [manualLat, manualLng]);
 
-  // Navigate to target
   const handleNavigate = useCallback((entry: BspsEntry) => {
-    if (!userLocation) {
-      detectLocation();
-    }
+    if (!userLocation) detectLocation();
     setRouteTarget(entry);
+    setMobileDetailOpen(false);
   }, [userLocation, detectLocation]);
 
   const selectedEntry = data.find((d) => d.id === selectedId);
@@ -715,10 +671,7 @@ export default function DashboardPage() {
           )}
           onClick={() => setActiveFilter(activeFilter === key ? null : key)}
         >
-          <div
-            className="w-2 h-2 rounded-full mr-1.5"
-            style={{ backgroundColor: MARKER_COLORS[key] }}
-          />
+          <div className="w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: MARKER_COLORS[key] }} />
           {config.label}
         </Button>
       ))}
@@ -728,7 +681,7 @@ export default function DashboardPage() {
   // ─── Stats Cards ─────────────────────────────────────────────────
 
   const statsCards = (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
       {stats?.countByKategori &&
         Object.entries(KATEGORI_CONFIG).map(([key, config]) => {
           const count = stats.countByKategori[key] || 0;
@@ -737,24 +690,18 @@ export default function DashboardPage() {
               key={key}
               className={cn(
                 'cursor-pointer transition-all duration-200 hover:shadow-md border',
-                activeFilter === key
-                  ? `${config.bgColor} ${config.borderColor} shadow-md`
-                  : 'hover:border-gray-300',
+                activeFilter === key ? `${config.bgColor} ${config.borderColor} shadow-md` : 'hover:border-gray-300',
               )}
               onClick={() => setActiveFilter(activeFilter === key ? null : key)}
             >
-              <CardContent className="p-3 sm:p-4">
+              <CardContent className="p-2.5 sm:p-4">
                 <div className="flex items-center justify-between">
-                  <div className={cn('p-2 rounded-lg', config.bgColor)}>
+                  <div className={cn('p-1.5 sm:p-2 rounded-lg', config.bgColor)}>
                     <div className={config.color}>{config.icon}</div>
                   </div>
-                  <span className={cn('text-2xl sm:text-3xl font-bold', config.color)}>
-                    {count}
-                  </span>
+                  <span className={cn('text-xl sm:text-3xl font-bold', config.color)}>{count}</span>
                 </div>
-                <p className={cn('text-xs sm:text-sm font-medium mt-2', config.color)}>
-                  {config.label}
-                </p>
+                <p className={cn('text-[10px] sm:text-sm font-medium mt-1 sm:mt-2', config.color)}>{config.label}</p>
               </CardContent>
             </Card>
           );
@@ -765,22 +712,19 @@ export default function DashboardPage() {
   // ─── Legend Overlay ──────────────────────────────────────────────
 
   const legendOverlay = (
-    <div className="absolute top-3 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-gray-100">
-      <p className="text-xs font-semibold text-gray-700 mb-2">Legenda</p>
-      <div className="space-y-1.5">
+    <div className="absolute top-3 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2.5 sm:p-3 border border-gray-100">
+      <p className="text-[10px] sm:text-xs font-semibold text-gray-700 mb-1.5 sm:mb-2">Legenda</p>
+      <div className="space-y-1 sm:space-y-1.5">
         {Object.entries(KATEGORI_CONFIG).map(([key, config]) => (
-          <div key={key} className="flex items-center gap-2">
-            <div
-              className="w-3 h-3 rounded-full shadow-sm ring-1 ring-white/50"
-              style={{ backgroundColor: MARKER_COLORS[key] }}
-            />
-            <span className="text-xs text-gray-600">{config.label}</span>
+          <div key={key} className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shadow-sm ring-1 ring-white/50" style={{ backgroundColor: MARKER_COLORS[key] }} />
+            <span className="text-[10px] sm:text-xs text-gray-600">{config.label}</span>
           </div>
         ))}
         {userLocation && (
-          <div className="flex items-center gap-2 pt-1 border-t border-gray-200 mt-1">
-            <div className="w-3 h-3 rounded-full bg-blue-500 ring-2 ring-blue-200" />
-            <span className="text-xs text-gray-600">Lokasi Anda</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 pt-1 border-t border-gray-200 mt-1">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500 ring-2 ring-blue-200" />
+            <span className="text-[10px] sm:text-xs text-gray-600">Lokasi Anda</span>
           </div>
         )}
       </div>
@@ -790,24 +734,22 @@ export default function DashboardPage() {
   // ─── Location Panel Overlay ──────────────────────────────────────
 
   const locationPanel = (
-    <div className="absolute bottom-16 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-gray-100 max-w-[280px]">
-      <div className="flex items-center gap-2 mb-2">
-        <LocateFixed className="w-4 h-4 text-blue-600" />
-        <span className="text-xs font-semibold text-gray-700">Lokasi & Rute</span>
+    <div className="absolute bottom-16 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2.5 sm:p-3 border border-gray-100 max-w-[260px] sm:max-w-[280px]">
+      <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+        <LocateFixed className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
+        <span className="text-[10px] sm:text-xs font-semibold text-gray-700">Lokasi & Rute</span>
         {routeTarget && (
-          <Badge className="text-[9px] bg-blue-50 text-blue-700 border-blue-200" variant="outline">
-            Rute aktif
-          </Badge>
+          <Badge className="text-[8px] sm:text-[9px] bg-blue-50 text-blue-700 border-blue-200" variant="outline">Rute aktif</Badge>
         )}
       </div>
 
       {userLocation ? (
         <div className="space-y-1.5">
-          <div className="text-xs text-gray-600">
+          <div className="text-[10px] sm:text-xs text-gray-600">
             📍 {userLocation.lat.toFixed(6)}, {userLocation.lng.toFixed(6)}
           </div>
           {routeTarget && (
-            <div className="text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1.5 border border-blue-100">
+            <div className="text-[10px] sm:text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1.5 border border-blue-100">
               🧭 Rute ke: <strong>{routeTarget.nama}</strong>
               <a
                 href={`https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${routeTarget.lat},${routeTarget.lng}`}
@@ -820,74 +762,33 @@ export default function DashboardPage() {
             </div>
           )}
           <div className="flex gap-1.5">
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-[10px] h-7 flex-1"
-              onClick={() => { setUserLocation(null); setRouteTarget(null); setManualLat(''); setManualLng(''); }}
-            >
-              Hapus Lokasi
+            <Button variant="outline" size="sm" className="text-[9px] sm:text-[10px] h-6 sm:h-7 flex-1" onClick={() => { setUserLocation(null); setRouteTarget(null); setManualLat(''); setManualLng(''); }}>
+              Hapus
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-[10px] h-7 flex-1"
-              onClick={detectLocation}
-              disabled={locating}
-            >
+            <Button variant="outline" size="sm" className="text-[9px] sm:text-[10px] h-6 sm:h-7 flex-1" onClick={detectLocation} disabled={locating}>
               {locating ? '...' : 'Refresh'}
             </Button>
           </div>
         </div>
       ) : (
-        <div className="space-y-2">
-          <Button
-            variant="default"
-            size="sm"
-            className="w-full text-xs h-8 bg-blue-600 hover:bg-blue-700"
-            onClick={detectLocation}
-            disabled={locating}
-          >
-            {locating ? (
-              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1.5" />
-            ) : (
-              <LocateFixed className="w-3.5 h-3.5 mr-1.5" />
-            )}
+        <div className="space-y-1.5 sm:space-y-2">
+          <Button variant="default" size="sm" className="w-full text-[10px] sm:text-xs h-7 sm:h-8 bg-blue-600 hover:bg-blue-700" onClick={detectLocation} disabled={locating}>
+            {locating ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1" /> : <LocateFixed className="w-3 h-3 mr-1" />}
             {locating ? 'Mendeteksi...' : 'Deteksi Lokasi Saya'}
           </Button>
-
-          <div className="text-[10px] text-gray-400 text-center">— atau masukkan manual —</div>
-
+          <div className="text-[9px] sm:text-[10px] text-gray-400 text-center">— atau masukkan manual —</div>
           <div className="flex gap-1.5">
-            <Input
-              placeholder="Latitude"
-              value={manualLat}
-              onChange={(e) => setManualLat(e.target.value)}
-              className="h-7 text-[10px] font-mono"
-            />
-            <Input
-              placeholder="Longitude"
-              value={manualLng}
-              onChange={(e) => setManualLng(e.target.value)}
-              className="h-7 text-[10px] font-mono"
-            />
+            <Input placeholder="Lat" value={manualLat} onChange={(e) => setManualLat(e.target.value)} className="h-6 sm:h-7 text-[9px] sm:text-[10px] font-mono" />
+            <Input placeholder="Lng" value={manualLng} onChange={(e) => setManualLng(e.target.value)} className="h-6 sm:h-7 text-[9px] sm:text-[10px] font-mono" />
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full text-[10px] h-7"
-            onClick={setManualLocation}
-            disabled={!manualLat || !manualLng}
-          >
+          <Button variant="outline" size="sm" className="w-full text-[9px] sm:text-[10px] h-6 sm:h-7" onClick={setManualLocation} disabled={!manualLat || !manualLng}>
             Set Lokasi Manual
           </Button>
         </div>
       )}
 
       {locationError && (
-        <div className="text-[10px] text-red-600 mt-1.5 bg-red-50 px-2 py-1 rounded border border-red-100">
-          {locationError}
-        </div>
+        <div className="text-[9px] sm:text-[10px] text-red-600 mt-1 bg-red-50 px-2 py-1 rounded border border-red-100">{locationError}</div>
       )}
     </div>
   );
@@ -897,10 +798,10 @@ export default function DashboardPage() {
   const searchOverlay = (
     <div className="absolute top-3 right-3 z-[1000]">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
         <Input
           placeholder="Cari nama, NIK..."
-          className="pl-9 w-48 sm:w-64 bg-white/95 backdrop-blur-sm shadow-lg border-0 text-sm h-9"
+          className="pl-8 sm:pl-9 w-40 sm:w-64 bg-white/95 backdrop-blur-sm shadow-lg border-0 text-xs sm:text-sm h-8 sm:h-9"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -911,54 +812,30 @@ export default function DashboardPage() {
   // ─── Map Markers ─────────────────────────────────────────────────
 
   const mapMarkers = filteredData.map((d) => ({
-    id: d.id,
-    lat: d.lat,
-    lng: d.lng,
-    nama: d.nama,
-    kategori: d.kategori,
-    nik: d.nik,
-    kk: d.kk,
-    alamat: d.alamat,
-    keterangan: d.keterangan,
+    id: d.id, lat: d.lat, lng: d.lng, nama: d.nama, kategori: d.kategori,
+    nik: d.nik, kk: d.kk, alamat: d.alamat, keterangan: d.keterangan,
   }));
 
   // ─── Desktop Sidebar Content ─────────────────────────────────────
 
-  const sidebarContent = (
+  const desktopSidebar = (
     <div className="flex flex-col h-full min-h-0">
-      {/* Filter Buttons */}
       <div className="shrink-0 pb-3">{filterButtons}</div>
 
-      {/* Detail Panel */}
       {selectedEntry && (
-        <Card
-          className={cn(
-            'border-2 shadow-md shrink-0 mb-3',
-            KATEGORI_CONFIG[selectedEntry.kategori]?.borderColor,
-            KATEGORI_CONFIG[selectedEntry.kategori]?.bgColor,
-          )}
-        >
+        <Card className={cn('border-2 shadow-md shrink-0 mb-3', KATEGORI_CONFIG[selectedEntry.kategori]?.borderColor, KATEGORI_CONFIG[selectedEntry.kategori]?.bgColor)}>
           <CardContent className="p-3">
             <DetailPanel
-              entry={selectedEntry}
-              dokumentasi={dokumentasi}
-              dokLoading={dokLoading}
-              onPhotoClick={handlePhotoClick}
-              onNavigate={handleNavigate}
-              userLocation={userLocation}
+              entry={selectedEntry} dokumentasi={dokumentasi} dokLoading={dokLoading}
+              onPhotoClick={handlePhotoClick} onNavigate={handleNavigate} userLocation={userLocation}
             />
           </CardContent>
         </Card>
       )}
 
-      {/* Data List */}
       <Card className="flex-1 flex flex-col overflow-hidden shadow-md min-h-0">
         <CardHeader className="p-3 pb-2 shrink-0">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-semibold">
-              Daftar Penerima ({filteredData.length})
-            </CardTitle>
-          </div>
+          <CardTitle className="text-sm font-semibold">Daftar Penerima ({filteredData.length})</CardTitle>
         </CardHeader>
         <Separator />
         <ScrollArea className="flex-1">
@@ -977,13 +854,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               filteredData.map((item) => (
-                <DataListItem
-                  key={item.id}
-                  item={item}
-                  isSelected={selectedId === item.id}
-                  isExpanded={selectedId === item.id}
-                  onSelect={handleSelect}
-                />
+                <DataListItem key={item.id} item={item} isSelected={selectedId === item.id} onSelect={handleSelect} />
               ))
             )}
           </div>
@@ -998,69 +869,95 @@ export default function DashboardPage() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b shadow-sm sticky top-0 z-20 shrink-0">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3">
+        <div className="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center shadow-md">
-                <Building2 className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center shadow-md">
+                <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-gray-900">
-                  Dashboard Pemetaan BSPS
-                </h1>
-                <p className="text-xs sm:text-sm text-gray-500">
-                  Kecamatan Paseh · Desa Loa
-                </p>
+                <h1 className="text-sm sm:text-xl font-bold text-gray-900">Dashboard BSPS</h1>
+                <p className="text-[10px] sm:text-sm text-gray-500">Kecamatan Paseh · Desa Loa</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {userLocation && (
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs hidden sm:inline-flex">
-                  <LocateFixed className="w-3 h-3 mr-1" />
-                  Lokasi Aktif
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[10px] sm:text-xs hidden sm:inline-flex">
+                  <LocateFixed className="w-3 h-3 mr-1" /> Lokasi Aktif
                 </Badge>
               )}
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs hidden sm:inline-flex">
-                <MapPin className="w-3 h-3 mr-1" />
-                {data.length} Titik
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-[10px] sm:text-xs">
+                <MapPin className="w-3 h-3 mr-1" /> {data.length}
               </Badge>
-              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs hidden sm:inline-flex">
-                <Users className="w-3 h-3 mr-1" />
-                {stats?.total || 37} Total
-              </Badge>
+              {/* Mobile toggle button */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="lg:hidden h-8 w-8 p-0"
+                onClick={() => setMobileView(mobileView === 'map' ? 'list' : 'map')}
+              >
+                {mobileView === 'map' ? <List className="w-4 h-4" /> : <Map className="w-4 h-4" />}
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Stats Cards */}
-      <div className="max-w-[1600px] mx-auto w-full px-4 sm:px-6 pt-4 shrink-0">
+      <div className="max-w-[1600px] mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 shrink-0">
         {statsCards}
       </div>
 
       {/* Main Content */}
-      <div className="max-w-[1600px] mx-auto w-full px-4 sm:px-6 py-4 flex-1 flex flex-col min-h-0">
-        <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0" style={{ minHeight: '480px' }}>
-          {/* Map Container */}
-          <div className="relative rounded-xl overflow-hidden shadow-lg border border-gray-200 shrink-0 lg:shrink lg:flex-1"
-            style={{ height: '55vh', minHeight: '280px' }}
+      <div className="max-w-[1600px] mx-auto w-full px-3 sm:px-6 py-3 sm:py-4 flex-1 flex flex-col min-h-0">
+        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 flex-1 min-h-0" style={{ minHeight: '400px' }}>
+
+          {/* ── Mobile: List View ── */}
+          {mobileView === 'list' && (
+            <div className="flex flex-col flex-1 min-h-0 lg:hidden">
+              <div className="shrink-0 pb-2">{filterButtons}</div>
+              <Card className="flex-1 flex flex-col overflow-hidden shadow-md min-h-0">
+                <CardHeader className="p-3 pb-2 shrink-0">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold">Daftar Penerima ({filteredData.length})</CardTitle>
+                  </div>
+                </CardHeader>
+                <Separator />
+                <ScrollArea className="flex-1">
+                  <div className="p-2 space-y-1">
+                    {loading ? (
+                      Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="p-3 rounded-lg bg-gray-50 animate-pulse">
+                          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                          <div className="h-3 bg-gray-200 rounded w-1/2" />
+                        </div>
+                      ))
+                    ) : filteredData.length === 0 ? (
+                      <div className="text-center py-8 text-gray-400">
+                        <Home className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">Tidak ada data ditemukan</p>
+                      </div>
+                    ) : (
+                      filteredData.map((item) => (
+                        <DataListItem key={item.id} item={item} isSelected={selectedId === item.id} onSelect={handleSelect} />
+                      ))
+                    )}
+                  </div>
+                </ScrollArea>
+              </Card>
+            </div>
+          )}
+
+          {/* ── Map Container (Desktop: always visible, Mobile: only in map view) ── */}
+          <div className={cn(
+            'relative rounded-xl overflow-hidden shadow-lg border border-gray-200 shrink-0 lg:shrink lg:flex-1',
+            mobileView === 'list' ? 'hidden lg:block' : 'block',
+          )}
+            style={{ height: mobileView === 'list' ? '55vh' : '55vh', minHeight: '280px' }}
           >
             {legendOverlay}
             {searchOverlay}
             {locationPanel}
-
-            {/* Mobile list toggle button */}
-            <button
-              type="button"
-              onClick={() => setMobileDrawerOpen(true)}
-              className="lg:hidden absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] bg-white/95 backdrop-blur-sm shadow-lg rounded-full px-5 py-2.5 flex items-center gap-2 border border-gray-100 hover:shadow-xl transition-shadow active:scale-95"
-            >
-              <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="text-sm font-semibold text-gray-700">
-                {filteredData.length} Penerima
-              </span>
-              <ChevronRight className="w-4 h-4 text-gray-400 rotate-90" />
-            </button>
 
             <MapComponent
               markers={mapMarkers}
@@ -1074,89 +971,36 @@ export default function DashboardPage() {
           </div>
 
           {/* Desktop Sidebar */}
-          <div className="hidden lg:flex w-[380px] shrink-0 min-h-0 flex-col">{sidebarContent}</div>
+          <div className="hidden lg:flex w-[380px] shrink-0 min-h-0 flex-col">{desktopSidebar}</div>
         </div>
       </div>
 
-      {/* Mobile Bottom Drawer */}
-      <Drawer open={mobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
-        <DrawerContent className="max-h-[85vh]">
-          <DrawerHeader className="pb-2">
-            <DrawerTitle className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-gray-500" />
-                Daftar Penerima BSPS
-              </span>
-              <Badge variant="outline" className="text-xs">
-                {filteredData.length} data
-              </Badge>
-            </DrawerTitle>
-          </DrawerHeader>
-
-          {/* Mobile Filters */}
-          <div className="px-4 pb-2 overflow-x-auto">
-            {filterButtons}
-          </div>
-
-          <div className="flex-1 min-h-0 overflow-hidden">
-            {/* Mobile Detail Panel */}
-            {selectedEntry && (
-              <div className="px-4 pb-3">
-                <Card
-                  className={cn(
-                    'border-2 shadow-md',
-                    KATEGORI_CONFIG[selectedEntry.kategori]?.borderColor,
-                    KATEGORI_CONFIG[selectedEntry.kategori]?.bgColor,
-                  )}
-                >
-                  <CardContent className="p-3">
-                    <DetailPanel
-                      entry={selectedEntry}
-                      dokumentasi={dokumentasi}
-                      dokLoading={dokLoading}
-                      onPhotoClick={handlePhotoClick}
-                      compact
-                      onNavigate={handleNavigate}
-                      userLocation={userLocation}
-                    />
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            {/* Mobile Data List */}
-            <ScrollArea className="max-h-[40vh]">
-              <div className="px-4 pb-4 space-y-1">
-                {loading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="p-3 rounded-lg bg-gray-50 animate-pulse">
-                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-                      <div className="h-3 bg-gray-200 rounded w-1/2" />
-                    </div>
-                  ))
-                ) : filteredData.length === 0 ? (
-                  <div className="text-center py-8 text-gray-400">
-                    <Home className="w-8 h-8 mx-auto mb-2" />
-                    <p className="text-sm">Tidak ada data ditemukan</p>
-                  </div>
-                ) : (
-                  filteredData.map((item) => (
-                    <DataListItem
-                      key={item.id}
-                      item={item}
-                      isSelected={selectedId === item.id}
-                      isExpanded={selectedId === item.id}
-                      onSelect={(id) => {
-                        handleSelect(id);
-                      }}
-                    />
-                  ))
-                )}
-              </div>
-            </ScrollArea>
-          </div>
-        </DrawerContent>
-      </Drawer>
+      {/* ── Mobile Full-Screen Detail Dialog ── */}
+      <Dialog open={mobileDetailOpen && !!selectedEntry} onOpenChange={(open) => { if (!open) setMobileDetailOpen(false); }}>
+        <DialogContent className="lg:hidden sm:max-w-lg max-h-[92vh] p-0 overflow-hidden">
+          <DialogHeader className="p-3 pb-0 flex flex-row items-center justify-between space-y-0">
+            <DialogTitle className="text-sm font-semibold flex items-center gap-2">
+              <button type="button" onClick={() => setMobileDetailOpen(false)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              Detail Penerima
+            </DialogTitle>
+            <button type="button" onClick={() => setMobileDetailOpen(false)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </DialogHeader>
+          <ScrollArea className="max-h-[80vh]">
+            <div className="p-4">
+              {selectedEntry && (
+                <DetailPanel
+                  entry={selectedEntry} dokumentasi={dokumentasi} dokLoading={dokLoading}
+                  onPhotoClick={handlePhotoClick} onNavigate={handleNavigate} userLocation={userLocation}
+                />
+              )}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
 
       {/* Photo Dialog */}
       <Dialog open={photoDialogOpen} onOpenChange={setPhotoDialogOpen}>
@@ -1168,11 +1012,7 @@ export default function DashboardPage() {
           </DialogHeader>
           {selectedPhoto?.url && (
             <div className="relative w-full aspect-[4/3] bg-gray-900 flex items-center justify-center">
-              <img
-                src={selectedPhoto.url}
-                alt={`${selectedPhoto.label} - ${selectedEntry?.nama || ''}`}
-                className="w-full h-full object-contain"
-              />
+              <img src={selectedPhoto.url} alt={`${selectedPhoto.label} - ${selectedEntry?.nama || ''}`} className="w-full h-full object-contain" />
             </div>
           )}
           <button
@@ -1186,9 +1026,9 @@ export default function DashboardPage() {
       </Dialog>
 
       {/* Footer */}
-      <footer className="mt-auto bg-white border-t py-3 shrink-0">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6">
-          <p className="text-xs text-center text-gray-400">
+      <footer className="mt-auto bg-white border-t py-2.5 sm:py-3 shrink-0">
+        <div className="max-w-[1600px] mx-auto px-3 sm:px-6">
+          <p className="text-[10px] sm:text-xs text-center text-gray-400">
             Dashboard Pemetaan BSPS · Kecamatan Paseh · Desa Loa · Kabupaten Bandung · {new Date().getFullYear()}
           </p>
         </div>
