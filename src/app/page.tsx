@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { 
-  MapPin, Users, Home, AlertTriangle, Search, Filter, 
+import {
+  MapPin, Users, Home, AlertTriangle, Search, Filter,
   ChevronRight, ChevronDown, LayoutDashboard, List,
   CheckCircle2, Clock, XCircle, Building2
 } from 'lucide-react';
@@ -18,10 +18,10 @@ import { cn } from '@/lib/utils';
 const MapComponent = dynamic(() => import('@/components/MapComponent'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full bg-muted/30 flex items-center justify-center rounded-xl">
+    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
       <div className="text-center space-y-3">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-sm text-muted-foreground">Memuat peta...</p>
+        <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-sm text-gray-500">Memuat peta...</p>
       </div>
     </div>
   ),
@@ -93,7 +93,6 @@ export default function DashboardPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [showList, setShowList] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -141,9 +140,9 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50/50">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b shadow-sm sticky top-0 z-20">
+      <header className="bg-white border-b shadow-sm sticky top-0 z-20 shrink-0">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -174,7 +173,7 @@ export default function DashboardPage() {
       </header>
 
       {/* Stats Cards */}
-      <div className="max-w-[1600px] mx-auto w-full px-4 sm:px-6 pt-4">
+      <div className="max-w-[1600px] mx-auto w-full px-4 sm:px-6 pt-4 shrink-0">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {stats?.countByKategori && Object.entries(KATEGORI_CONFIG).map(([key, config]) => {
             const count = stats.countByKategori[key] || 0;
@@ -209,18 +208,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 max-w-[1600px] mx-auto w-full px-4 sm:px-6 py-4">
-        <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-240px)] min-h-[500px]">
-          {/* Map */}
+      <div className="max-w-[1600px] mx-auto w-full px-4 sm:px-6 py-4" style={{ flex: '1 1 0%', minHeight: 0 }}>
+        <div className="flex flex-col lg:flex-row gap-4" style={{ height: 'calc(100vh - 250px)', minHeight: '480px' }}>
+          {/* Map Container */}
           <div className="flex-1 relative rounded-xl overflow-hidden shadow-lg border border-gray-200">
-            {/* Legend */}
-            <div className="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-gray-100">
+            {/* Legend - overlaid on map */}
+            <div className="absolute top-3 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-gray-100">
               <p className="text-xs font-semibold text-gray-700 mb-2">Legenda</p>
               <div className="space-y-1.5">
                 {Object.entries(KATEGORI_CONFIG).map(([key, config]) => (
                   <div key={key} className="flex items-center gap-2">
                     <div
-                      className="w-3 h-3 rounded-full shadow-sm"
+                      className="w-3 h-3 rounded-full shadow-sm ring-1 ring-white/50"
                       style={{ backgroundColor: MARKER_COLORS[key] }}
                     />
                     <span className="text-xs text-gray-600">{config.label}</span>
@@ -229,13 +228,13 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Search on map */}
-            <div className="absolute top-3 right-3 z-10">
+            {/* Search - overlaid on map */}
+            <div className="absolute top-3 right-3 z-[1000]">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
                   placeholder="Cari nama, NIK..."
-                  className="pl-9 w-56 sm:w-64 bg-white/95 backdrop-blur-sm shadow-lg border-0 text-sm"
+                  className="pl-9 w-56 sm:w-64 bg-white/95 backdrop-blur-sm shadow-lg border-0 text-sm h-9"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -262,7 +261,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:w-[380px] flex flex-col gap-3">
+          <div className="lg:w-[380px] flex flex-col gap-3 shrink-0">
             {/* Filter Bar */}
             <div className="flex items-center gap-2 flex-wrap">
               <Button
@@ -294,23 +293,12 @@ export default function DashboardPage() {
                   {config.label}
                 </Button>
               ))}
-              <div className="ml-auto">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-xs h-8 lg:hidden"
-                  onClick={() => setShowList(!showList)}
-                >
-                  {showList ? <LayoutDashboard className="w-3 h-3 mr-1" /> : <List className="w-3 h-3 mr-1" />}
-                  {showList ? 'Peta' : 'Daftar'}
-                </Button>
-              </div>
             </div>
 
             {/* Selected Entry Detail */}
             {selectedEntry && (
               <Card className={cn(
-                'border-2 shadow-md',
+                'border-2 shadow-md shrink-0',
                 KATEGORI_CONFIG[selectedEntry.kategori]?.borderColor,
                 KATEGORI_CONFIG[selectedEntry.kategori]?.bgColor,
               )}>
@@ -368,8 +356,8 @@ export default function DashboardPage() {
             )}
 
             {/* Data List */}
-            <Card className="flex-1 flex flex-col overflow-hidden shadow-md">
-              <CardHeader className="p-3 pb-2">
+            <Card className="flex-1 flex flex-col overflow-hidden shadow-md min-h-0">
+              <CardHeader className="p-3 pb-2 shrink-0">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold">
                     Daftar Penerima ({filteredData.length})
@@ -405,14 +393,12 @@ export default function DashboardPage() {
                               ? `${config?.bgColor} ${config?.borderColor} border`
                               : '',
                           )}
-                          onClick={() => {
-                            handleSelect(item.id);
-                          }}
+                          onClick={() => handleSelect(item.id)}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2.5 min-w-0">
                               <div
-                                className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm"
+                                className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm ring-1 ring-white/50"
                                 style={{ backgroundColor: MARKER_COLORS[item.kategori] }}
                               />
                               <div className="min-w-0">
@@ -489,7 +475,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-auto bg-white border-t py-3">
+      <footer className="mt-auto bg-white border-t py-3 shrink-0">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6">
           <p className="text-xs text-center text-gray-400">
             Dashboard Pemetaan BSPS · Kecamatan Paseh · Desa Loa · Kabupaten Bandung · {new Date().getFullYear()}
