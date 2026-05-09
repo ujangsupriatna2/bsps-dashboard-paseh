@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bspsData from "@/data/bsps-data.json";
+import photoManifest from "@/data/photo-manifest.json";
 
 // Photo labels mapping
 const PHOTO_LABELS: Record<string, string> = {
@@ -66,19 +67,58 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // For Vercel/JSON mode, we just return placeholders
-    // In production with real file hosting, this would check actual files
-    const photos = PHOTO_ORDER.map((key) => ({
-      key,
-      label: PHOTO_LABELS[key],
-      exists: false,
-      url: null,
-    }));
+    // Convert folderPath like "/dokumentasi/aam" to "dokumentasi/aam"
+    const manifestKey = entry.folderPath.replace(/^\//, "");
+
+    // Look up existing photos from the manifest
+    const existingFiles: string[] = (photoManifest as Record<string, string[]>)[manifestKey] || [];
+
+    // Build photo list with all standard positions
+    const photos = PHOTO_ORDER.map((key) => {
+      // Find the file that matches this key (could be .jpg or .jpeg)
+      const matchingFile = existingFiles.find(
+        (f) => f.toLowerCase().startsWith(key + ".")
+      );
+
+      if (matchingFile) {
+        const rawUrl = `/${manifestKey}/${matchingFile}`;
+        return {
+          key,
+          label: PHOTO_LABELS[key],
+          exists: true,
+          url: encodeURI(rawUrl),
+        };
+      }
+
+      return {
+        key,
+        label: PHOTO_LABELS[key],
+        exists: false,
+        url: null,
+      };
+    });
+
+    // Also add any extra photos not in standard order (fotobareng, bersama, etc.)
+    const extraPhotos = existingFiles
+      .filter((f) => {
+        const baseName = f.replace(/\.[^.]+$/, "").toLowerCase();
+        return !PHOTO_ORDER.includes(baseName);
+      })
+      .map((f) => {
+        const baseName = f.replace(/\.[^.]+$/, "");
+        const rawUrl = `/${manifestKey}/${f}`;
+        return {
+          key: baseName,
+          label: PHOTO_LABELS[baseName] || baseName.charAt(0).toUpperCase() + baseName.slice(1),
+          exists: true,
+          url: encodeURI(rawUrl),
+        };
+      });
 
     return NextResponse.json({
       id: entry.id,
       nama: entry.nama,
-      photos,
+      photos: [...photos, ...extraPhotos],
     });
   } catch (error) {
     console.error("Error fetching dokumentasi:", error);
