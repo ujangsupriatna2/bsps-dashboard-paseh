@@ -22,10 +22,10 @@ import {
 } from '@/components/ui/drawer';
 import {
   MapPin, Users, Home, AlertTriangle, Search, Filter,
-  ChevronRight, ChevronDown, Building2,
+  ChevronRight, ChevronDown, ChevronUp, Building2,
   CheckCircle2, Clock, XCircle, Camera, X, ImageOff,
   Navigation, LocateFixed, Route, ExternalLink, Lock, ShieldCheck,
-  ArrowLeft, List, Map,
+  ArrowLeft, List, Map, Eye, EyeOff,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -497,6 +497,10 @@ export default function DashboardPage() {
   const [manualLng, setManualLng] = useState('');
   const [routeTarget, setRouteTarget] = useState<BspsEntry | null>(null);
 
+  // Overlay visibility state
+  const [showLocationPanel, setShowLocationPanel] = useState(true);
+  const [showLegend, setShowLegend] = useState(true);
+
   // Check existing auth
   useEffect(() => {
     const stored = localStorage.getItem('bsps_access');
@@ -712,36 +716,71 @@ export default function DashboardPage() {
   // ─── Legend Overlay ──────────────────────────────────────────────
 
   const legendOverlay = (
-    <div className="absolute top-3 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2.5 sm:p-3 border border-gray-100">
-      <p className="text-[10px] sm:text-xs font-semibold text-gray-700 mb-1.5 sm:mb-2">Legenda</p>
-      <div className="space-y-1 sm:space-y-1.5">
-        {Object.entries(KATEGORI_CONFIG).map(([key, config]) => (
-          <div key={key} className="flex items-center gap-1.5 sm:gap-2">
-            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shadow-sm ring-1 ring-white/50" style={{ backgroundColor: MARKER_COLORS[key] }} />
-            <span className="text-[10px] sm:text-xs text-gray-600">{config.label}</span>
+    <div className="absolute top-3 left-3 z-[1000]">
+      {showLegend ? (
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2.5 sm:p-3 border border-gray-100">
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <p className="text-[10px] sm:text-xs font-semibold text-gray-700">Legenda</p>
+            <button
+              type="button"
+              onClick={() => setShowLegend(false)}
+              className="w-5 h-5 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+              title="Sembunyikan legenda"
+            >
+              <X className="w-3 h-3 text-gray-500" />
+            </button>
           </div>
-        ))}
-        {userLocation && (
-          <div className="flex items-center gap-1.5 sm:gap-2 pt-1 border-t border-gray-200 mt-1">
-            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500 ring-2 ring-blue-200" />
-            <span className="text-[10px] sm:text-xs text-gray-600">Lokasi Anda</span>
+          <div className="space-y-1 sm:space-y-1.5">
+            {Object.entries(KATEGORI_CONFIG).map(([key, config]) => (
+              <div key={key} className="flex items-center gap-1.5 sm:gap-2">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shadow-sm ring-1 ring-white/50" style={{ backgroundColor: MARKER_COLORS[key] }} />
+                <span className="text-[10px] sm:text-xs text-gray-600">{config.label}</span>
+              </div>
+            ))}
+            {userLocation && (
+              <div className="flex items-center gap-1.5 sm:gap-2 pt-1 border-t border-gray-200 mt-1">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500 ring-2 ring-blue-200" />
+                <span className="text-[10px] sm:text-xs text-gray-600">Lokasi Anda</span>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowLegend(true)}
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/95 backdrop-blur-sm shadow-lg border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-colors"
+          title="Tampilkan legenda"
+        >
+          <EyeOff className="w-4 h-4 text-gray-600" />
+        </button>
+      )}
     </div>
   );
 
   // ─── Location Panel Overlay ──────────────────────────────────────
 
   const locationPanel = (
-    <div className="absolute bottom-16 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2.5 sm:p-3 border border-gray-100 max-w-[260px] sm:max-w-[280px]">
-      <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-        <LocateFixed className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
-        <span className="text-[10px] sm:text-xs font-semibold text-gray-700">Lokasi & Rute</span>
-        {routeTarget && (
-          <Badge className="text-[8px] sm:text-[9px] bg-blue-50 text-blue-700 border-blue-200" variant="outline">Rute aktif</Badge>
-        )}
-      </div>
+    <div className="absolute bottom-16 left-3 z-[1000]">
+      {showLocationPanel ? (
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2.5 sm:p-3 border border-gray-100 max-w-[260px] sm:max-w-[280px]">
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <LocateFixed className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
+              <span className="text-[10px] sm:text-xs font-semibold text-gray-700">Lokasi & Rute</span>
+              {routeTarget && (
+                <Badge className="text-[8px] sm:text-[9px] bg-blue-50 text-blue-700 border-blue-200" variant="outline">Rute aktif</Badge>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowLocationPanel(false)}
+              className="w-5 h-5 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+              title="Sembunyikan panel lokasi"
+            >
+              <X className="w-3 h-3 text-gray-500" />
+            </button>
+          </div>
 
       {userLocation ? (
         <div className="space-y-1.5">
@@ -789,6 +828,20 @@ export default function DashboardPage() {
 
       {locationError && (
         <div className="text-[9px] sm:text-[10px] text-red-600 mt-1 bg-red-50 px-2 py-1 rounded border border-red-100">{locationError}</div>
+      )}
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowLocationPanel(true)}
+          className={cn(
+            "w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/95 backdrop-blur-sm shadow-lg border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-colors",
+            routeTarget && "ring-2 ring-blue-300"
+          )}
+          title="Tampilkan panel lokasi & rute"
+        >
+          <LocateFixed className="w-4 h-4 text-blue-600" />
+        </button>
       )}
     </div>
   );
