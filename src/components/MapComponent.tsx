@@ -135,39 +135,61 @@ export default function MapComponent({
     return map;
   }, [markers]);
 
+  // InitMap function - defined before useEffect that uses it
+  const initMapRef = useRef((containerEl: HTMLDivElement) => {
+    if (mapRef.current) return;
+
+    const map = L.map(containerEl, {
+      center,
+      zoom,
+      zoomControl: false,
+    });
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19,
+    }).addTo(map);
+
+    mapRef.current = map;
+    setMapReady(true);
+
+    // Multiple invalidateSize calls to ensure proper rendering
+    setTimeout(() => map.invalidateSize(), 50);
+    setTimeout(() => map.invalidateSize(), 200);
+    setTimeout(() => map.invalidateSize(), 500);
+    setTimeout(() => map.invalidateSize(), 1000);
+  });
+
   // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
     const containerEl = mapContainerRef.current;
 
-    // Small delay to ensure container has dimensions
-    const initTimeout = setTimeout(() => {
-      const map = L.map(containerEl, {
-        center,
-        zoom,
-        zoomControl: false,
+    // Check if container has dimensions before initializing
+    const rect = containerEl.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+      // Wait for container to have dimensions
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+            observer.disconnect();
+            initMapRef.current(containerEl);
+          }
+        }
       });
+      observer.observe(containerEl);
+      return () => observer.disconnect();
+    }
 
-      L.control.zoom({ position: 'bottomright' }).addTo(map);
+    initMapRef.current(containerEl);
+  }, []);
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19,
-      }).addTo(map);
-
-      mapRef.current = map;
-      setMapReady(true);
-
-      // Multiple invalidateSize calls to ensure proper rendering
-      setTimeout(() => map.invalidateSize(), 50);
-      setTimeout(() => map.invalidateSize(), 200);
-      setTimeout(() => map.invalidateSize(), 500);
-      setTimeout(() => map.invalidateSize(), 1000);
-    }, 50);
-
+  // Cleanup map on unmount
+  useEffect(() => {
     return () => {
-      clearTimeout(initTimeout);
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;

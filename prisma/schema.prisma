@@ -11,19 +11,20 @@ datasource db {
 }
 
 model BspsData {
-  id        String   @id @default(cuid())
-  nama      String
-  nik       String?
-  kk        String?
-  alamat    String?
-  kecamatan String   @default("Paseh")
-  desa      String   @default("Loa")
-  rt        String?
-  rw        String?
-  lat       Float
-  lng       Float
-  kategori  String   // data_awal, data_susulan, layak_huni, data_cadangan
+  id         String   @id @default(cuid())
+  nama       String
+  nik        String?
+  kk         String?
+  alamat     String?
+  kecamatan  String   @default("Paseh")
+  desa       String   @default("Loa")
+  rt         String?
+  rw         String?
+  lat        Float
+  lng        Float
+  kategori   String   // data_awal, data_susulan, layak_huni, data_cadangan
   keterangan String? // layak huni details, susulan info, etc.
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  folderPath String? // path to documentation photos folder
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
