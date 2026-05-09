@@ -24,6 +24,7 @@ import {
   MapPin, Users, Home, AlertTriangle, Search, Filter,
   ChevronRight, ChevronDown, Building2,
   CheckCircle2, Clock, XCircle, Camera, X, ImageOff,
+  Navigation, LocateFixed, Route, ExternalLink, Lock, ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -124,6 +125,117 @@ const MARKER_COLORS: Record<string, string> = {
   data_cadangan: '#ef4444',
 };
 
+// ─── Passcode Screen ─────────────────────────────────────────────────────────
+
+function PasscodeScreen({ onAccess }: { onAccess: () => void }) {
+  const [code, setCode] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        localStorage.setItem('bsps_access', 'true');
+        onAccess();
+      } else {
+        setError(data.error || 'Kode akses salah');
+      }
+    } catch {
+      setError('Terjadi kesalahan koneksi');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 p-4">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center shadow-xl mx-auto mb-4">
+            <Building2 className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Dashboard BSPS
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Pemetaan Bantuan Stimulan Perumahan Swadaya
+          </p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            Kecamatan Paseh · Desa Loa · Kabupaten Bandung
+          </p>
+        </div>
+
+        {/* Card */}
+        <Card className="shadow-xl border-gray-200">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                <Lock className="w-5 h-5 text-green-700" />
+              </div>
+              <div>
+                <h2 className="font-semibold text-gray-900">Akses Terbatas</h2>
+                <p className="text-xs text-gray-500">Masukkan kode akses untuk melanjutkan</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Input
+                  type="password"
+                  placeholder="Masukkan kode akses"
+                  value={code}
+                  onChange={(e) => { setCode(e.target.value); setError(''); }}
+                  className="h-12 text-center text-lg tracking-widest font-mono"
+                  autoFocus
+                  disabled={loading}
+                />
+              </div>
+
+              {error && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-center">
+                  {error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white font-semibold"
+                disabled={loading || !code}
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <ShieldCheck className="w-4 h-4 mr-2" />
+                    Masuk
+                  </>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <p className="text-xs text-center text-gray-400 mt-6">
+          Hubungi administrator untuk mendapatkan kode akses
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Photo Grid Component ────────────────────────────────────────────────────
 
 function PhotoGrid({
@@ -189,14 +301,19 @@ function DetailPanel({
   dokLoading,
   onPhotoClick,
   compact = false,
+  onNavigate,
+  userLocation,
 }: {
   entry: BspsEntry;
   dokumentasi: DokumentasiData | null;
   dokLoading: boolean;
   onPhotoClick: (photo: DokumentasiPhoto) => void;
   compact?: boolean;
+  onNavigate: (entry: BspsEntry) => void;
+  userLocation: { lat: number; lng: number } | null;
 }) {
   const config = KATEGORI_CONFIG[entry.kategori];
+  const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${entry.lat},${entry.lng}${userLocation ? `&origin=${userLocation.lat},${userLocation.lng}` : ''}`;
 
   return (
     <div className="space-y-3">
@@ -257,6 +374,34 @@ function DetailPanel({
             {entry.lat.toFixed(6)}, {entry.lng.toFixed(6)}
           </span>
         </div>
+      </div>
+
+      <Separator />
+
+      {/* Navigation Buttons */}
+      <div className="space-y-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            'w-full text-xs h-9 border-blue-200 text-blue-700 hover:bg-blue-50',
+            userLocation && 'bg-blue-50',
+          )}
+          onClick={() => onNavigate(entry)}
+        >
+          <Route className="w-3.5 h-3.5 mr-1.5" />
+          {userLocation ? 'Tampilkan Rute di Peta' : 'Tampilkan Rute di Peta'}
+        </Button>
+        <a
+          href={gmapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-1.5 text-xs h-9 rounded-md bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
+        >
+          <Navigation className="w-3.5 h-3.5" />
+          Buka Rute Google Maps
+          <ExternalLink className="w-3 h-3 ml-0.5" />
+        </a>
       </div>
 
       <Separator />
@@ -349,6 +494,11 @@ function DataListItem({
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
+  // Auth state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Data state
   const [data, setData] = useState<BspsEntry[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -366,6 +516,23 @@ export default function DashboardPage() {
 
   // Mobile drawer state
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  // Location & routing state
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [manualLat, setManualLat] = useState('');
+  const [manualLng, setManualLng] = useState('');
+  const [routeTarget, setRouteTarget] = useState<BspsEntry | null>(null);
+
+  // Check existing auth
+  useEffect(() => {
+    const stored = localStorage.getItem('bsps_access');
+    if (stored === 'true') {
+      setIsAuthenticated(true);
+    }
+    setAuthChecked(true);
+  }, []);
 
   // Fetch main data
   const fetchData = useCallback(async () => {
@@ -392,8 +559,10 @@ export default function DashboardPage() {
   }, [activeFilter, searchQuery]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (isAuthenticated) {
+      fetchData();
+    }
+  }, [fetchData, isAuthenticated]);
 
   // Fetch documentation when selected
   useEffect(() => {
@@ -421,6 +590,7 @@ export default function DashboardPage() {
 
   const handleSelect = useCallback((id: string) => {
     setSelectedId((prev) => (prev === id ? null : id));
+    setRouteTarget(null); // Clear route when selecting new item
   }, []);
 
   const handleMobileSelect = useCallback((id: string) => {
@@ -432,6 +602,66 @@ export default function DashboardPage() {
     setSelectedPhoto(photo);
     setPhotoDialogOpen(true);
   }, []);
+
+  // Detect user location
+  const detectLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolokasi tidak didukung oleh browser Anda');
+      return;
+    }
+
+    setLocating(true);
+    setLocationError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setLocating(false);
+        setManualLat(position.coords.latitude.toString());
+        setManualLng(position.coords.longitude.toString());
+      },
+      (error) => {
+        setLocating(false);
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setLocationError('Izin lokasi ditolak. Aktifkan GPS/lokasi di pengaturan browser.');
+            break;
+          case error.POSITION_UNAVAILABLE:
+            setLocationError('Informasi lokasi tidak tersedia');
+            break;
+          case error.TIMEOUT:
+            setLocationError('Waktu permintaan lokasi habis');
+            break;
+          default:
+            setLocationError('Terjadi kesalahan saat mendeteksi lokasi');
+        }
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+    );
+  }, []);
+
+  // Set manual location
+  const setManualLocation = useCallback(() => {
+    const lat = parseFloat(manualLat);
+    const lng = parseFloat(manualLng);
+    if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+      setUserLocation({ lat, lng });
+      setLocationError(null);
+    } else {
+      setLocationError('Koordinat tidak valid. Lat: -90 s/d 90, Lng: -180 s/d 180');
+    }
+  }, [manualLat, manualLng]);
+
+  // Navigate to target
+  const handleNavigate = useCallback((entry: BspsEntry) => {
+    if (!userLocation) {
+      detectLocation();
+    }
+    setRouteTarget(entry);
+  }, [userLocation, detectLocation]);
 
   const selectedEntry = data.find((d) => d.id === selectedId);
 
@@ -445,7 +675,21 @@ export default function DashboardPage() {
     );
   });
 
-  // ─── Filter Buttons ──────────────────────────────────────────────────
+  // ─── Auth gate ──────────────────────────────────────────────────
+
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <PasscodeScreen onAccess={() => setIsAuthenticated(true)} />;
+  }
+
+  // ─── Filter Buttons ──────────────────────────────────────────────
 
   const filterButtons = (
     <div className="flex items-center gap-2 flex-wrap">
@@ -481,7 +725,7 @@ export default function DashboardPage() {
     </div>
   );
 
-  // ─── Stats Cards ─────────────────────────────────────────────────────
+  // ─── Stats Cards ─────────────────────────────────────────────────
 
   const statsCards = (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -518,7 +762,7 @@ export default function DashboardPage() {
     </div>
   );
 
-  // ─── Legend Overlay ──────────────────────────────────────────────────
+  // ─── Legend Overlay ──────────────────────────────────────────────
 
   const legendOverlay = (
     <div className="absolute top-3 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-gray-100">
@@ -533,11 +777,122 @@ export default function DashboardPage() {
             <span className="text-xs text-gray-600">{config.label}</span>
           </div>
         ))}
+        {userLocation && (
+          <div className="flex items-center gap-2 pt-1 border-t border-gray-200 mt-1">
+            <div className="w-3 h-3 rounded-full bg-blue-500 ring-2 ring-blue-200" />
+            <span className="text-xs text-gray-600">Lokasi Anda</span>
+          </div>
+        )}
       </div>
     </div>
   );
 
-  // ─── Search Overlay ──────────────────────────────────────────────────
+  // ─── Location Panel Overlay ──────────────────────────────────────
+
+  const locationPanel = (
+    <div className="absolute bottom-16 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-gray-100 max-w-[280px]">
+      <div className="flex items-center gap-2 mb-2">
+        <LocateFixed className="w-4 h-4 text-blue-600" />
+        <span className="text-xs font-semibold text-gray-700">Lokasi & Rute</span>
+        {routeTarget && (
+          <Badge className="text-[9px] bg-blue-50 text-blue-700 border-blue-200" variant="outline">
+            Rute aktif
+          </Badge>
+        )}
+      </div>
+
+      {userLocation ? (
+        <div className="space-y-1.5">
+          <div className="text-xs text-gray-600">
+            📍 {userLocation.lat.toFixed(6)}, {userLocation.lng.toFixed(6)}
+          </div>
+          {routeTarget && (
+            <div className="text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1.5 border border-blue-100">
+              🧭 Rute ke: <strong>{routeTarget.nama}</strong>
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${routeTarget.lat},${routeTarget.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-1 text-green-700 hover:text-green-800 font-semibold"
+              >
+                Buka Google Maps →
+              </a>
+            </div>
+          )}
+          <div className="flex gap-1.5">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-[10px] h-7 flex-1"
+              onClick={() => { setUserLocation(null); setRouteTarget(null); setManualLat(''); setManualLng(''); }}
+            >
+              Hapus Lokasi
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-[10px] h-7 flex-1"
+              onClick={detectLocation}
+              disabled={locating}
+            >
+              {locating ? '...' : 'Refresh'}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <Button
+            variant="default"
+            size="sm"
+            className="w-full text-xs h-8 bg-blue-600 hover:bg-blue-700"
+            onClick={detectLocation}
+            disabled={locating}
+          >
+            {locating ? (
+              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1.5" />
+            ) : (
+              <LocateFixed className="w-3.5 h-3.5 mr-1.5" />
+            )}
+            {locating ? 'Mendeteksi...' : 'Deteksi Lokasi Saya'}
+          </Button>
+
+          <div className="text-[10px] text-gray-400 text-center">— atau masukkan manual —</div>
+
+          <div className="flex gap-1.5">
+            <Input
+              placeholder="Latitude"
+              value={manualLat}
+              onChange={(e) => setManualLat(e.target.value)}
+              className="h-7 text-[10px] font-mono"
+            />
+            <Input
+              placeholder="Longitude"
+              value={manualLng}
+              onChange={(e) => setManualLng(e.target.value)}
+              className="h-7 text-[10px] font-mono"
+            />
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full text-[10px] h-7"
+            onClick={setManualLocation}
+            disabled={!manualLat || !manualLng}
+          >
+            Set Lokasi Manual
+          </Button>
+        </div>
+      )}
+
+      {locationError && (
+        <div className="text-[10px] text-red-600 mt-1.5 bg-red-50 px-2 py-1 rounded border border-red-100">
+          {locationError}
+        </div>
+      )}
+    </div>
+  );
+
+  // ─── Search Overlay ──────────────────────────────────────────────
 
   const searchOverlay = (
     <div className="absolute top-3 right-3 z-[1000]">
@@ -553,7 +908,7 @@ export default function DashboardPage() {
     </div>
   );
 
-  // ─── Map Markers ─────────────────────────────────────────────────────
+  // ─── Map Markers ─────────────────────────────────────────────────
 
   const mapMarkers = filteredData.map((d) => ({
     id: d.id,
@@ -567,7 +922,7 @@ export default function DashboardPage() {
     keterangan: d.keterangan,
   }));
 
-  // ─── Desktop Sidebar Content ─────────────────────────────────────────
+  // ─── Desktop Sidebar Content ─────────────────────────────────────
 
   const sidebarContent = (
     <div className="flex flex-col h-full min-h-0">
@@ -589,6 +944,8 @@ export default function DashboardPage() {
               dokumentasi={dokumentasi}
               dokLoading={dokLoading}
               onPhotoClick={handlePhotoClick}
+              onNavigate={handleNavigate}
+              userLocation={userLocation}
             />
           </CardContent>
         </Card>
@@ -635,7 +992,7 @@ export default function DashboardPage() {
     </div>
   );
 
-  // ─── Render ──────────────────────────────────────────────────────────
+  // ─── Render ──────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -656,12 +1013,18 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
-            <div className="hidden sm:flex items-center gap-2">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
+            <div className="flex items-center gap-2">
+              {userLocation && (
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs hidden sm:inline-flex">
+                  <LocateFixed className="w-3 h-3 mr-1" />
+                  Lokasi Aktif
+                </Badge>
+              )}
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs hidden sm:inline-flex">
                 <MapPin className="w-3 h-3 mr-1" />
                 {data.length} Titik
               </Badge>
-              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
+              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs hidden sm:inline-flex">
                 <Users className="w-3 h-3 mr-1" />
                 {stats?.total || 37} Total
               </Badge>
@@ -678,12 +1041,13 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="max-w-[1600px] mx-auto w-full px-4 sm:px-6 py-4 flex-1 flex flex-col min-h-0">
         <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0" style={{ minHeight: '480px' }}>
-          {/* Map Container - responsive */}
+          {/* Map Container */}
           <div className="relative rounded-xl overflow-hidden shadow-lg border border-gray-200 shrink-0 lg:shrink lg:flex-1"
             style={{ height: '55vh', minHeight: '280px' }}
           >
             {legendOverlay}
             {searchOverlay}
+            {locationPanel}
 
             {/* Mobile list toggle button */}
             <button
@@ -704,10 +1068,12 @@ export default function DashboardPage() {
               zoom={13}
               selectedId={selectedId}
               onSelect={handleSelect}
+              userLocation={userLocation}
+              routeTarget={routeTarget}
             />
           </div>
 
-          {/* Desktop Sidebar - hidden on mobile */}
+          {/* Desktop Sidebar */}
           <div className="hidden lg:flex w-[380px] shrink-0 min-h-0 flex-col">{sidebarContent}</div>
         </div>
       </div>
@@ -750,6 +1116,8 @@ export default function DashboardPage() {
                       dokLoading={dokLoading}
                       onPhotoClick={handlePhotoClick}
                       compact
+                      onNavigate={handleNavigate}
+                      userLocation={userLocation}
                     />
                   </CardContent>
                 </Card>

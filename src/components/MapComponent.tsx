@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import L from 'leaflet';
 
 export interface MapMarker {
@@ -15,12 +15,19 @@ export interface MapMarker {
   keterangan?: string | null;
 }
 
+interface UserLocation {
+  lat: number;
+  lng: number;
+}
+
 interface MapProps {
   markers: MapMarker[];
   center?: [number, number];
   zoom?: number;
   selectedId?: string | null;
   onSelect?: (id: string) => void;
+  userLocation?: UserLocation | null;
+  routeTarget?: MapMarker | null;
 }
 
 const KATEGORI_COLORS: Record<string, string> = {
@@ -80,9 +87,52 @@ function createMarkerIcon(kategori: string, isSelected: boolean = false): L.DivI
   });
 }
 
+function createUserIcon(): L.DivIcon {
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `
+      <div style="position: relative; width: 32px; height: 32px;">
+        <div style="
+          position: absolute;
+          width: 32px;
+          height: 32px;
+          background: #3b82f6;
+          border: 3px solid white;
+          border-radius: 50%;
+          box-shadow: 0 0 0 3px rgba(59,130,246,0.3), 0 2px 8px rgba(0,0,0,0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        ">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+          </svg>
+        </div>
+        <div style="
+          position: absolute;
+          top: 32px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 0;
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-top: 8px solid #3b82f6;
+          filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        "></div>
+      </div>
+    `,
+    iconSize: [32, 40],
+    iconAnchor: [16, 40],
+    popupAnchor: [0, -40],
+  });
+}
+
 function createPopupContent(marker: MapMarker): string {
   const color = KATEGORI_COLORS[marker.kategori] || '#6b7280';
   const label = KATEGORI_LABELS[marker.kategori] || marker.kategori;
+  const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${marker.lat},${marker.lng}`;
 
   return `
     <div style="padding: 14px 16px; font-family: system-ui, -apple-system, sans-serif;">
@@ -113,6 +163,21 @@ function createPopupContent(marker: MapMarker): string {
       <div style="font-size: 10px; color: #aaa; margin-top: 6px;">
         🌐 ${marker.lat.toFixed(6)}, ${marker.lng.toFixed(6)}
       </div>
+      <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" style="
+        display: block;
+        margin-top: 10px;
+        padding: 8px 12px;
+        background: #3b82f6;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        transition: background 0.2s;
+      " onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+        🧭 Buka Rute Google Maps
+      </a>
     </div>
   `;
 }
@@ -123,10 +188,14 @@ export default function MapComponent({
   zoom = 13,
   selectedId,
   onSelect,
+  userLocation,
+  routeTarget,
 }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markersRef = useRef<Map<string, L.Marker>>(new Map());
+  const userMarkerRef = useRef<L.Marker | null>(null);
+  const routeLineRef = useRef<L.Polyline | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
   const markersMap = useMemo(() => {
@@ -135,7 +204,7 @@ export default function MapComponent({
     return map;
   }, [markers]);
 
-  // InitMap function - defined before useEffect that uses it
+  // InitMap function
   const initMapRef = useRef((containerEl: HTMLDivElement) => {
     if (mapRef.current) return;
 
@@ -155,7 +224,6 @@ export default function MapComponent({
     mapRef.current = map;
     setMapReady(true);
 
-    // Multiple invalidateSize calls to ensure proper rendering
     setTimeout(() => map.invalidateSize(), 50);
     setTimeout(() => map.invalidateSize(), 200);
     setTimeout(() => map.invalidateSize(), 500);
@@ -167,11 +235,8 @@ export default function MapComponent({
     if (!mapContainerRef.current || mapRef.current) return;
 
     const containerEl = mapContainerRef.current;
-
-    // Check if container has dimensions before initializing
     const rect = containerEl.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) {
-      // Wait for container to have dimensions
       const observer = new ResizeObserver((entries) => {
         for (const entry of entries) {
           if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
@@ -231,6 +296,75 @@ export default function MapComponent({
       markersRef.current.set(markerData.id, marker);
     });
   }, [markers, selectedId, onSelect, mapReady]);
+
+  // Update user location marker
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+
+    // Remove existing user marker
+    if (userMarkerRef.current) {
+      map.removeLayer(userMarkerRef.current);
+      userMarkerRef.current = null;
+    }
+
+    if (userLocation) {
+      const userMarker = L.marker([userLocation.lat, userLocation.lng], {
+        icon: createUserIcon(),
+        zIndexOffset: 1000,
+      });
+
+      userMarker.bindPopup(`
+        <div style="padding: 10px 14px; font-family: system-ui, -apple-system, sans-serif;">
+          <div style="font-size: 13px; font-weight: 700; color: #1a1a1a; display: flex; align-items: center; gap: 6px;">
+            <span style="display: inline-block; width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; border: 2px solid white;"></span>
+            Lokasi Anda
+          </div>
+          <div style="font-size: 11px; color: #888; margin-top: 4px;">
+            ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}
+          </div>
+        </div>
+      `, { maxWidth: 250 });
+
+      userMarker.addTo(map);
+      userMarkerRef.current = userMarker;
+    }
+  }, [userLocation, mapReady]);
+
+  // Update route line
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+
+    // Remove existing route
+    if (routeLineRef.current) {
+      map.removeLayer(routeLineRef.current);
+      routeLineRef.current = null;
+    }
+
+    if (userLocation && routeTarget) {
+      const routeCoords: [number, number][] = [
+        [userLocation.lat, userLocation.lng],
+        [routeTarget.lat, routeTarget.lng],
+      ];
+
+      const routeLine = L.polyline(routeCoords, {
+        color: '#3b82f6',
+        weight: 4,
+        opacity: 0.8,
+        dashArray: '10, 8',
+        lineCap: 'round',
+        lineJoin: 'round',
+      });
+
+      routeLine.addTo(map);
+      routeLineRef.current = routeLine;
+
+      // Fit bounds to show both points
+      const bounds = L.latLngBounds(routeCoords);
+      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 });
+    }
+  }, [userLocation, routeTarget, mapReady]);
 
   // Fly to selected marker + open popup
   useEffect(() => {

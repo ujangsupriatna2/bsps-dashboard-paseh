@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import bspsData from "@/data/bsps-data.json";
 
 /**
  * GET /api/bsps/stats
@@ -7,58 +7,29 @@ import { db } from "@/lib/db";
  */
 export async function GET() {
   try {
-    // Total count
-    const total = await db.bspsData.count();
+    const total = bspsData.length;
 
     // Count by kategori
-    const countByKategoriRaw = await db.bspsData.groupBy({
-      by: ["kategori"],
-      _count: {
-        kategori: true,
-      },
-    });
-
     const countByKategori: Record<string, number> = {};
-    for (const item of countByKategoriRaw) {
-      countByKategori[item.kategori] = item._count.kategori;
+    for (const item of bspsData) {
+      countByKategori[item.kategori] = (countByKategori[item.kategori] || 0) + 1;
     }
 
     // Count by desa
-    const countByDesaRaw = await db.bspsData.groupBy({
-      by: ["desa"],
-      _count: {
-        desa: true,
-      },
-    });
-
     const countByDesa: Record<string, number> = {};
-    for (const item of countByDesaRaw) {
-      countByDesa[item.desa] = item._count.desa;
+    for (const item of bspsData) {
+      countByDesa[item.desa] = (countByDesa[item.desa] || 0) + 1;
     }
 
     // Count by kecamatan
-    const countByKecamatanRaw = await db.bspsData.groupBy({
-      by: ["kecamatan"],
-      _count: {
-        kecamatan: true,
-      },
-    });
-
     const countByKecamatan: Record<string, number> = {};
-    for (const item of countByKecamatanRaw) {
-      countByKecamatan[item.kecamatan] = item._count.kecamatan;
+    for (const item of bspsData) {
+      countByKecamatan[item.kecamatan] = (countByKecamatan[item.kecamatan] || 0) + 1;
     }
 
-    // Count by kategori per desa (cross tabulation)
-    const allData = await db.bspsData.findMany({
-      select: {
-        desa: true,
-        kategori: true,
-      },
-    });
-
+    // Count by kategori per desa
     const kategoriPerDesa: Record<string, Record<string, number>> = {};
-    for (const item of allData) {
+    for (const item of bspsData) {
       if (!kategoriPerDesa[item.desa]) {
         kategoriPerDesa[item.desa] = {};
       }

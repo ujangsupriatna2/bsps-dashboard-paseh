@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import fs from "fs";
-import path from "path";
+import bspsData from "@/data/bsps-data.json";
 
 // Photo labels mapping
 const PHOTO_LABELS: Record<string, string> = {
@@ -46,7 +44,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const entry = await db.bspsData.findUnique({ where: { id } });
+    const entry = bspsData.find((d) => d.id === id);
 
     if (!entry) {
       return NextResponse.json(
@@ -68,54 +66,19 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Check which photos exist
-    const publicDir = path.join(process.cwd(), "public", entry.folderPath.replace(/^\//, ""));
-
-    const photos = PHOTO_ORDER.map((key) => {
-      // Check both .jpg and .jpeg
-      const jpgPath = path.join(publicDir, `${key}.jpg`);
-      const jpegPath = path.join(publicDir, `${key}.jpeg`);
-
-      let exists = false;
-      let ext = "";
-
-      if (fs.existsSync(jpgPath)) {
-        exists = true;
-        ext = ".jpg";
-      } else if (fs.existsSync(jpegPath)) {
-        exists = true;
-        ext = ".jpeg";
-      }
-
-      return {
-        key,
-        label: PHOTO_LABELS[key],
-        exists,
-        url: exists ? `${entry.folderPath}/${key}${ext}` : null,
-      };
-    });
-
-    // Also find any extra photos not in the standard list
-    let extraPhotos: { key: string; label: string; exists: boolean; url: string }[] = [];
-    if (fs.existsSync(publicDir)) {
-      const files = fs.readdirSync(publicDir);
-      for (const file of files) {
-        const baseName = file.replace(/\.(jpg|jpeg)$/i, "").toLowerCase();
-        if (!PHOTO_ORDER.includes(baseName) && PHOTO_LABELS[baseName]) {
-          extraPhotos.push({
-            key: baseName,
-            label: PHOTO_LABELS[baseName],
-            exists: true,
-            url: `${entry.folderPath}/${file}`,
-          });
-        }
-      }
-    }
+    // For Vercel/JSON mode, we just return placeholders
+    // In production with real file hosting, this would check actual files
+    const photos = PHOTO_ORDER.map((key) => ({
+      key,
+      label: PHOTO_LABELS[key],
+      exists: false,
+      url: null,
+    }));
 
     return NextResponse.json({
       id: entry.id,
       nama: entry.nama,
-      photos: [...photos, ...extraPhotos],
+      photos,
     });
   } catch (error) {
     console.error("Error fetching dokumentasi:", error);
