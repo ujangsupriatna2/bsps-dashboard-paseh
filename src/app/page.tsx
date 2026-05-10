@@ -1024,32 +1024,30 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Mobile Full-Screen Detail Dialog ── */}
-      <Dialog open={mobileDetailOpen && !!selectedEntry} onOpenChange={(open) => { if (!open) setMobileDetailOpen(false); }}>
-        <DialogContent className="lg:hidden sm:max-w-lg max-h-[92vh] p-0 overflow-hidden">
-          <DialogHeader className="p-3 pb-0 flex flex-row items-center justify-between space-y-0">
-            <DialogTitle className="text-sm font-semibold flex items-center gap-2">
+      {/* ── Mobile Detail Drawer ── */}
+      <Drawer open={mobileDetailOpen && !!selectedEntry} onOpenChange={(open) => { if (!open) setMobileDetailOpen(false); }}>
+        <DrawerContent className="lg:hidden max-h-[90vh]">
+          <DrawerHeader className="p-3 pb-0 flex flex-row items-center justify-between space-y-0">
+            <DrawerTitle className="text-sm font-semibold flex items-center gap-2">
               <button type="button" onClick={() => setMobileDetailOpen(false)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
                 <ArrowLeft className="w-4 h-4" />
               </button>
               Detail Penerima
-            </DialogTitle>
+            </DrawerTitle>
             <button type="button" onClick={() => setMobileDetailOpen(false)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
               <X className="w-4 h-4" />
             </button>
-          </DialogHeader>
-          <ScrollArea className="max-h-[80vh]">
-            <div className="p-4">
-              {selectedEntry && (
-                <DetailPanel
-                  entry={selectedEntry} dokumentasi={dokumentasi} dokLoading={dokLoading}
-                  onPhotoClick={handlePhotoClick} onNavigate={handleNavigate} userLocation={userLocation}
-                />
-              )}
-            </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
+          </DrawerHeader>
+          <div className="overflow-y-auto overscroll-contain p-4" style={{ maxHeight: 'calc(90vh - 60px)' }}>
+            {selectedEntry && (
+              <DetailPanel
+                entry={selectedEntry} dokumentasi={dokumentasi} dokLoading={dokLoading}
+                onPhotoClick={handlePhotoClick} onNavigate={handleNavigate} userLocation={userLocation}
+              />
+            )}
+          </div>
+        </DrawerContent>
+      </Drawer>
 
       {/* Photo Dialog */}
       <Dialog open={photoDialogOpen} onOpenChange={setPhotoDialogOpen}>
