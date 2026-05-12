@@ -481,6 +481,22 @@
   },
   {
     "id": "31",
+    "nama": "DENI HERMANTO",
+    "nik": "-",
+    "kk": "-",
+    "alamat": "KP. Loa",
+    "kecamatan": "Paseh",
+    "desa": "Loa",
+    "rt": null,
+    "rw": null,
+    "lat": -7.06779708,
+    "lng": 107.78490439,
+    "kategori": "data_acc",
+    "keterangan": null,
+    "folderPath": "/dokumentasi/cadangan/deni - CP - kadus keempat"
+  },
+  {
+    "id": "32",
     "nama": "WARSA",
     "nik": "3204351002711001",
     "kk": "3204351609140013",
