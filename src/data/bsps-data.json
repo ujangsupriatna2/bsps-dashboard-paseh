@@ -43,8 +43,8 @@
     "rw": "10",
     "lat": -7.07448163,
     "lng": 107.78844668,
-    "kategori": "data_acc",
-    "keterangan": null,
+    "kategori": "tidak_acc_layak_huni",
+    "keterangan": "Layak Huni - Dibangun Pribadi",
     "folderPath": "/dokumentasi/endang - layak huni - dibangun pribadi"
   },
   {
@@ -161,7 +161,7 @@
   },
   {
     "id": "11",
-    "nama": "ADANG",
+    "nama": "LALAN",
     "nik": "3204364406880002",
     "kk": "3204361108120039",
     "alamat": "KP CANAR RT 1 RW 12",
@@ -171,8 +171,8 @@
     "rw": "12",
     "lat": -7.08472292,
     "lng": 107.79085082,
-    "kategori": "data_acc",
-    "keterangan": null,
+    "kategori": "tidak_acc_layak_huni",
+    "keterangan": "Layak Huni - Dibangun Pribadi",
     "folderPath": "/dokumentasi/lalan - layak huni - dibangun pribadi"
   },
   {
@@ -260,7 +260,7 @@
     "nama": "CARMA DEDI",
     "nik": "3204351207600004",
     "kk": "3204350101060016",
-    "alamat": "KP. Cidadap RT 004 RW 005",
+    "alamat": "KP. CIDADAP RT 004 RW 005",
     "kecamatan": "Paseh",
     "desa": "Loa",
     "rt": "004",
@@ -305,6 +305,38 @@
   },
   {
     "id": "20",
+    "nama": "ENDANG SARGA",
+    "nik": "3204350911550003",
+    "kk": "3204352903110009",
+    "alamat": "KP.TIISDINGIN RT 2 RW 6",
+    "kecamatan": "Paseh",
+    "desa": "Loa",
+    "rt": "2",
+    "rw": "6",
+    "lat": -7.07856038,
+    "lng": 107.79085138,
+    "kategori": "data_acc",
+    "keterangan": null,
+    "folderPath": "/dokumentasi/endang sarga"
+  },
+  {
+    "id": "21",
+    "nama": "ADANG",
+    "nik": "3204352905890001",
+    "kk": "3204351612210006",
+    "alamat": "KP. CIDADAP RT 5 RW 5",
+    "kecamatan": "Paseh",
+    "desa": "Loa",
+    "rt": "5",
+    "rw": "5",
+    "lat": -7.07272036,
+    "lng": 107.78008687,
+    "kategori": "data_acc",
+    "keterangan": null,
+    "folderPath": "/dokumentasi/adang"
+  },
+  {
+    "id": "22",
     "nama": "U.ODIN",
     "nik": "3204351108770005",
     "kk": "3204351009120001",
@@ -320,7 +352,7 @@
     "folderPath": "/dokumentasi/u odin - layak huni - dibangun pribadi"
   },
   {
-    "id": "21",
+    "id": "23",
     "nama": "TOTO TARMALA",
     "nik": "3204350101920001",
     "kk": "3204351803050561",
@@ -336,7 +368,7 @@
     "folderPath": "/dokumentasi/toto tarmala - layak huni -dibangun pribadi"
   },
   {
-    "id": "22",
+    "id": "24",
     "nama": "UJANG TIMAN",
     "nik": "3204351508760018",
     "kk": "3204351211130013",
@@ -352,7 +384,7 @@
     "folderPath": "/dokumentasi/ujang timan - layak huni - dibangun pribadi"
   },
   {
-    "id": "23",
+    "id": "25",
     "nama": "EMEH",
     "nik": "3204354107590197",
     "kk": "3204352210070031",
@@ -368,7 +400,7 @@
     "folderPath": "/dokumentasi/emeh - layak huni - dibangun pribadi"
   },
   {
-    "id": "24",
+    "id": "26",
     "nama": "TATAN RUSTANDI",
     "nik": "3203151003900004",
     "kk": "3204350304200001",
@@ -384,7 +416,7 @@
     "folderPath": "/dokumentasi/tatan rustandi - layak huni - dibangun pribadi"
   },
   {
-    "id": "25",
+    "id": "27",
     "nama": "HADI",
     "nik": "3204352502820008",
     "kk": "3204351004070008",
@@ -400,7 +432,7 @@
     "folderPath": "/dokumentasi/hadi - layak huni - dibantu desa"
   },
   {
-    "id": "26",
+    "id": "28",
     "nama": "ILPAN SETIA MULYA",
     "nik": "3204332811900005",
     "kk": "3204352506130041",
@@ -416,7 +448,7 @@
     "folderPath": "/dokumentasi/ilpan setia mulya - layak huni - dibangun pribadi"
   },
   {
-    "id": "27",
+    "id": "29",
     "nama": "SAEPULOH",
     "nik": "3204351406940003",
     "kk": "3204352909220007",
@@ -432,7 +464,7 @@
     "folderPath": "/dokumentasi/saepuloh - layak huni - tidak ditempati"
   },
   {
-    "id": "28",
+    "id": "30",
     "nama": "EHA",
     "nik": "3204355002550004",
     "kk": "3204353009220015",
@@ -446,5 +478,21 @@
     "kategori": "tidak_acc_layak_huni",
     "keterangan": "Layak Huni - Dibantu Desa",
     "folderPath": "/dokumentasi/eha - layak huni - dibantu desa"
+  },
+  {
+    "id": "31",
+    "nama": "WARSA",
+    "nik": "3204351002711001",
+    "kk": "3204351609140013",
+    "alamat": "KP. BUKATANAH RT 2 RW 3",
+    "kecamatan": "Paseh",
+    "desa": "Loa",
+    "rt": "2",
+    "rw": "3",
+    "lat": -7.0857243,
+    "lng": 107.79673617,
+    "kategori": "tidak_acc_tidak_melanjutkan",
+    "keterangan": "Tidak Ingin Melanjutkan",
+    "folderPath": "/dokumentasi/warsa"
   }
 ]

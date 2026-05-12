@@ -90,7 +90,7 @@ const KATEGORI_CONFIG: Record<string, {
   icon: React.ReactNode;
 }> = {
   data_acc: {
-    label: 'Data ACC',
+    label: 'Data di ACC',
     color: 'text-green-700',
     bgColor: 'bg-green-50',
     borderColor: 'border-green-200',
@@ -103,11 +103,19 @@ const KATEGORI_CONFIG: Record<string, {
     borderColor: 'border-yellow-200',
     icon: <AlertTriangle className="w-4 h-4" />,
   },
+  tidak_acc_tidak_melanjutkan: {
+    label: 'Tidak ACC - Tidak Melanjutkan',
+    color: 'text-red-700',
+    bgColor: 'bg-red-50',
+    borderColor: 'border-red-200',
+    icon: <XCircle className="w-4 h-4" />,
+  },
 };
 
 const MARKER_COLORS: Record<string, string> = {
   data_acc: '#22c55e',
   tidak_acc_layak_huni: '#eab308',
+  tidak_acc_tidak_melanjutkan: '#ef4444',
 };
 
 // ─── Passcode Screen ─────────────────────────────────────────────────────────
@@ -667,7 +675,25 @@ export default function DashboardPage() {
   // ─── Stats Cards ─────────────────────────────────────────────────
 
   const statsCards = (
-    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+      {/* Total Card */}
+      <Card
+        className={cn(
+          'cursor-pointer transition-all duration-200 hover:shadow-md border',
+          activeFilter === null ? 'bg-gray-50 border-gray-400 shadow-md' : 'hover:border-gray-300',
+        )}
+        onClick={() => setActiveFilter(null)}
+      >
+        <CardContent className="p-2.5 sm:p-4">
+          <div className="flex items-center justify-between">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-gray-100">
+              <Users className="w-4 h-4 text-gray-700" />
+            </div>
+            <span className="text-xl sm:text-3xl font-bold text-gray-700">{stats?.total || 0}</span>
+          </div>
+          <p className="text-[10px] sm:text-sm font-medium mt-1 sm:mt-2 text-gray-700">Total Data</p>
+        </CardContent>
+      </Card>
       {stats?.countByKategori &&
         Object.entries(KATEGORI_CONFIG).map(([key, config]) => {
           const count = stats.countByKategori[key] || 0;

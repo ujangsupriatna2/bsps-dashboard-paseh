@@ -31,17 +31,15 @@ interface MapProps {
 }
 
 const KATEGORI_COLORS: Record<string, string> = {
-  data_awal: '#22c55e',
-  data_susulan: '#22c55e',
-  layak_huni: '#eab308',
-  data_cadangan: '#ef4444',
+  data_acc: '#22c55e',
+  tidak_acc_layak_huni: '#eab308',
+  tidak_acc_tidak_melanjutkan: '#ef4444',
 };
 
 const KATEGORI_LABELS: Record<string, string> = {
-  data_awal: 'Data Awal',
-  data_susulan: 'Data Susulan',
-  layak_huni: 'Layak Huni',
-  data_cadangan: 'Data Cadangan',
+  data_acc: 'Data di ACC',
+  tidak_acc_layak_huni: 'Tidak ACC - Layak Huni',
+  tidak_acc_tidak_melanjutkan: 'Tidak ACC - Tidak Melanjutkan',
 };
 
 function createMarkerIcon(kategori: string, isSelected: boolean = false): L.DivIcon {
