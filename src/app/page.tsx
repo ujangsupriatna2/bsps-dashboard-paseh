@@ -89,41 +89,25 @@ const KATEGORI_CONFIG: Record<string, {
   borderColor: string;
   icon: React.ReactNode;
 }> = {
-  data_awal: {
-    label: 'Data Awal',
+  data_acc: {
+    label: 'Data ACC',
     color: 'text-green-700',
     bgColor: 'bg-green-50',
     borderColor: 'border-green-200',
     icon: <CheckCircle2 className="w-4 h-4" />,
   },
-  data_susulan: {
-    label: 'Data Susulan',
-    color: 'text-emerald-700',
-    bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-200',
-    icon: <Clock className="w-4 h-4" />,
-  },
-  layak_huni: {
-    label: 'Layak Huni',
+  tidak_acc_layak_huni: {
+    label: 'Tidak ACC - Layak Huni',
     color: 'text-yellow-700',
     bgColor: 'bg-yellow-50',
     borderColor: 'border-yellow-200',
     icon: <AlertTriangle className="w-4 h-4" />,
   },
-  data_cadangan: {
-    label: 'Data Cadangan',
-    color: 'text-red-700',
-    bgColor: 'bg-red-50',
-    borderColor: 'border-red-200',
-    icon: <XCircle className="w-4 h-4" />,
-  },
 };
 
 const MARKER_COLORS: Record<string, string> = {
-  data_awal: '#22c55e',
-  data_susulan: '#22c55e',
-  layak_huni: '#eab308',
-  data_cadangan: '#ef4444',
+  data_acc: '#22c55e',
+  tidak_acc_layak_huni: '#eab308',
 };
 
 // ─── Passcode Screen ─────────────────────────────────────────────────────────
@@ -683,7 +667,7 @@ export default function DashboardPage() {
   // ─── Stats Cards ─────────────────────────────────────────────────
 
   const statsCards = (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3">
       {stats?.countByKategori &&
         Object.entries(KATEGORI_CONFIG).map(([key, config]) => {
           const count = stats.countByKategori[key] || 0;
@@ -1025,8 +1009,12 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Mobile Detail Drawer ── */}
-      <Drawer open={mobileDetailOpen && !!selectedEntry} onOpenChange={(open) => { if (!open) setMobileDetailOpen(false); }}>
-        <DrawerContent className="lg:hidden max-h-[90vh]">
+      <Drawer
+        open={mobileDetailOpen && !!selectedEntry}
+        onOpenChange={(open) => { if (!open) setMobileDetailOpen(false); }}
+        shouldScaleBackground
+      >
+        <DrawerContent className="lg:hidden max-h-[85vh]">
           <DrawerHeader className="p-3 pb-0 flex flex-row items-center justify-between space-y-0">
             <DrawerTitle className="text-sm font-semibold flex items-center gap-2">
               <button type="button" onClick={() => setMobileDetailOpen(false)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
@@ -1038,12 +1026,17 @@ export default function DashboardPage() {
               <X className="w-4 h-4" />
             </button>
           </DrawerHeader>
-          <div className="overflow-y-auto overscroll-contain p-4" style={{ maxHeight: 'calc(90vh - 60px)' }}>
-            {selectedEntry && (
+          <div className="overflow-y-auto overscroll-contain p-4" style={{ maxHeight: 'calc(85vh - 60px)' }}>
+            {selectedEntry ? (
               <DetailPanel
                 entry={selectedEntry} dokumentasi={dokumentasi} dokLoading={dokLoading}
                 onPhotoClick={handlePhotoClick} onNavigate={handleNavigate} userLocation={userLocation}
               />
+            ) : (
+              <div className="text-center py-8 text-gray-400">
+                <Home className="w-8 h-8 mx-auto mb-2" />
+                <p className="text-sm">Data tidak ditemukan</p>
+              </div>
             )}
           </div>
         </DrawerContent>
