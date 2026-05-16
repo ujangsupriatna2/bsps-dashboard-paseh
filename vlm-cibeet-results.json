@@ -1,0 +1,82 @@
+[
+  {
+    "folder": "ujang carma - pergantian",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "watini - pergantian",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "idi",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "mamah - pergantian",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "ujang tata",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "anih - pergantian",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "ujang nanda",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "dahim - layak huni",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "atep dadi - tidak ingin melanjutkan",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "iim - pergantian",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "engkas",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "meli andalia",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "esih",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "ano - pergantian",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "ujang nana",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  },
+  {
+    "folder": "yana",
+    "photo": "depan.jpg",
+    "result": "ERROR: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}"
+  }
+]
