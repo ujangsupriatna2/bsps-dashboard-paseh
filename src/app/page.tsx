@@ -124,7 +124,7 @@ const DESA_CONFIG: Record<string, { label: string; kecamatan: string; center: [n
   Lampegan: {
     label: 'Desa Lampegan',
     kecamatan: 'Ibun',
-    center: [-7.022, 107.565],
+    center: [-7.068, 107.760],
     zoom: 14,
   },
 };
@@ -659,7 +659,7 @@ export default function DashboardPage() {
 
   // Map center/zoom based on desa
   const mapCenter: [number, number] = activeDesa === 'semua'
-    ? [-7.05, 107.68]
+    ? [-7.07, 107.78]
     : DESA_CONFIG[activeDesa]?.center || [-7.08, 107.79];
   const mapZoom = activeDesa === 'semua' ? 11 : (DESA_CONFIG[activeDesa]?.zoom || 13);
 
