@@ -29,3 +29,27 @@ Stage Summary:
 - Coordinates for 7 new entries are estimated based on address areas
 - ONENG entry has placeholder NIK/KK ("-") - needs actual data
 - Documents regenerated with both desa data
+
+---
+Task ID: 6
+Agent: Sub Agent
+Task: Add Desa Cibeet data entries to BSPS dashboard
+
+Work Log:
+- Read existing bsps-data.json (55 entries) and photo-manifest.json (48 folders)
+- Added 21 Cibeet entries (IDs 56-76) to bsps-data.json:
+  - 15 original people from data list (IDs 56-70)
+  - 6 replacement/pengganti entries (IDs 71-76) without NIK/KK data
+- Categorized entries:
+  - data_acc: 13 entries (MELI ANDALIA, ESIH, UJANG TATA, YANA, ENGKAS, UJANG NENDI, IDI, ANIH, ANO, IIM, MAMAH, UJANG CARMA, WATINI)
+  - tidak_acc_layak_huni: 7 entries (UJANG NANA, UNDANG TOTO, ROHMAN, DIDIH, IWAN, DAHIM, AYI HANA)
+  - tidak_acc_tidak_melanjutkan: 1 entry (ATEP DADI)
+- Added 16 Cibeet photo folders to photo-manifest.json
+- Coordinates estimated based on RT/RW areas with small offsets to prevent marker overlap
+- Replacement entries (ANIH, ANO, IIM, MAMAH, UJANG CARMA, WATINI) use placeholder NIK/KK ("-") and null RT/RW
+
+Stage Summary:
+- Total entries: 76 (48 data_acc, 25 tidak_acc_layak_huni, 3 tidak_acc_tidak_melanjutkan)
+- Desa Loa: 32 entries | Desa Lampegan: 23 entries | Desa Cibeet: 21 entries
+- Total photo folders: 64 (48 existing + 16 new Cibeet folders)
+- 6 replacement entries have placeholder NIK/KK ("-") - need actual data when available

@@ -35,16 +35,26 @@ const BSPS_LABELS: Record<string, string> = {
   "foto-bersama": "Foto Bersama Papan BSPS",
   "kamar-mandi": "Kamar Mandi / Sanitasi",
   // Legacy labels (for Desa Loa photos)
-  atas: "Bagian Atas",
+  atas: "Bagian Atas / Atap",
   dalam: "Dalam Rumah",
   dapur: "Dapur",
   sanitasi: "Kamar Mandi",
   atap: "Atap",
   fotobareng: "Foto Bareng",
-  bersama: "Foto Bersama",
-  kamarmandi: "Kamar Mandi",
+  bersama: "Foto Bersama Penerima",
+  kamarmandi: "Kamar Mandi / Sanitasi",
   lantai: "Lantai",
   pencahayaan: "Pencahayaan",
+  tihang: "Tiang Penyangga",
+  pondasi: "Pondasi",
+  // Numbered photos (additional angles)
+  "1": "Foto Tambahan (1)",
+  "2": "Foto Tambahan (2)",
+  "3": "Foto Tambahan (3)",
+  "4": "Foto Tambahan (4)",
+  "kanan-1": "Tampak Samping Kanan (1)",
+  kiri: "Tampak Samping Kiri",
+  kanan: "Tampak Samping Kanan",
 };
 
 // Ordered list for display priority
@@ -90,6 +100,15 @@ const PHOTO_ORDER = [
   "kamarmandi",
   "lantai",
   "pencahayaan",
+  "tihang",
+  "pondasi",
+  "kiri",
+  "kanan",
+  "kanan-1",
+  "1",
+  "2",
+  "3",
+  "4",
 ];
 
 /**

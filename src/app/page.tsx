@@ -112,7 +112,7 @@ const MARKER_COLORS: Record<string, string> = {
 
 // ─── Desa Config ──────────────────────────────────────────────────────────────
 
-type DesaFilter = 'semua' | 'Loa' | 'Lampegan';
+type DesaFilter = 'semua' | 'Loa' | 'Lampegan' | 'Cibeet';
 
 const DESA_CONFIG: Record<string, { label: string; kecamatan: string; center: [number, number]; zoom: number }> = {
   Loa: {
@@ -125,6 +125,12 @@ const DESA_CONFIG: Record<string, { label: string; kecamatan: string; center: [n
     label: 'Desa Lampegan',
     kecamatan: 'Ibun',
     center: [-7.068, 107.760],
+    zoom: 14,
+  },
+  Cibeet: {
+    label: 'Desa Cibeet',
+    kecamatan: 'Ibun',
+    center: [-7.085, 107.761],
     zoom: 14,
   },
 };

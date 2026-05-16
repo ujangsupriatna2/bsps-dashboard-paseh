@@ -1,28 +1,37 @@
 {
+  "dokumentasi/Tarlan - susulan pic": [
+    "dalam.jpg",
+    "depan.jpg",
+    "kanan.jpg",
+    "kiri.jpg"
+  ],
   "dokumentasi/aam": [
     "atas.jpg",
     "belakang.jpg",
     "depan.jpg",
     "kanan.jpg"
   ],
-  "dokumentasi/engkus": [
+  "dokumentasi/adang": [
+    "kanan.jpg",
+    "depan.jpg",
+    "kiri.jpg",
+    "sanitasi.jpg",
+    "fotobareng.jpg"
+  ],
+  "dokumentasi/ade": [
     "bersama.jpg",
     "depan.jpg",
-    "kanan.jpg"
-  ],
-  "dokumentasi/endang - layak huni - dibangun pribadi": [
-    "depan.jpg",
     "kiri.jpg"
-  ],
-  "dokumentasi/saripudin": [
-    "atas.jpg",
-    "belakang.jpg",
-    "depan.jpg",
-    "kanan.jpg"
   ],
   "dokumentasi/ahmad - susulan pic": [
     "atas.jpg",
     "dalam.jpg",
+    "depan.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/anah": [
+    "belakang.jpg",
+    "bersama.jpg",
     "depan.jpg",
     "kanan.jpg"
   ],
@@ -32,56 +41,14 @@
     "kanan.jpg",
     "kiri.jpg"
   ],
-  "dokumentasi/dana - susulan pic": [
-    "atap.jpg",
-    "dapur.jpg",
-    "depan.jpg",
-    "fotobareng.jpg",
-    "kanan.jpg"
-  ],
-  "dokumentasi/nurhayati - susulan pic": [
-    "bersama.jpg",
-    "depan.jpg",
-    "kanan.jpg",
-    "kiri.jpg"
-  ],
-  "dokumentasi/Tarlan - susulan pic": [
-    "dalam.jpg",
-    "depan.jpg",
-    "kanan.jpg",
-    "kiri.jpg"
-  ],
-  "dokumentasi/cadangan/icah - CP - kadus kedua": [
+  "dokumentasi/cadangan/carma dedi - CP - kadus kedua": [
     "depan.jpg",
     "kiri.jpg"
   ],
-  "dokumentasi/lalan - layak huni - dibangun pribadi": [
+  "dokumentasi/cadangan/deni - CP - kadus keempat": [
     "depan.jpg",
-    "kiri.jpg"
-  ],
-  "dokumentasi/ade": [
-    "bersama.jpg",
-    "depan.jpg",
-    "kiri.jpg"
-  ],
-  "dokumentasi/anah": [
-    "belakang.jpg",
-    "bersama.jpg",
-    "depan.jpg",
-    "kanan.jpg"
-  ],
-  "dokumentasi/wahyu wibisana": [
-    "dalam.jpg",
-    "depan.jpg",
-    "kanan.jpg",
-    "kiri.jpg"
-  ],
-  "dokumentasi/ecin - susulan pic": [
-    "belakang.jpg",
-    "bersama.jpg",
-    "dalam.jpg",
-    "depan.jpg",
-    "kanan.jpg"
+    "kiri.jpg",
+    "bersama.jpg"
   ],
   "dokumentasi/cadangan/ekur - CP - kadus kelima": [
     "atas.jpg",
@@ -91,7 +58,7 @@
     "kiri.jpg",
     "sanitasi.jpg"
   ],
-  "dokumentasi/cadangan/carma dedi - CP - kadus kedua": [
+  "dokumentasi/cadangan/icah - CP - kadus kedua": [
     "depan.jpg",
     "kiri.jpg"
   ],
@@ -99,35 +66,179 @@
     "bersama.jpg",
     "depan.jpg"
   ],
+  "dokumentasi/cibeet/anih - pergantian": [
+    "1.jpg",
+    "belakang.jpg",
+    "dapur.jpg",
+    "depan.jpg",
+    "kamarmandi.jpg",
+    "lantai.jpg"
+  ],
+  "dokumentasi/cibeet/ano - pergantian": [
+    "1.jpg",
+    "2.jpg",
+    "belakang.jpg",
+    "bersama.jpg",
+    "dalam.jpg",
+    "dapur.jpg",
+    "depan.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/cibeet/atep dadi - tidak ingin melanjutkan": [
+    "dalam.jpg",
+    "depan.jpg",
+    "kanan.jpg",
+    "kiri.jpg",
+    "pencahayaan.jpg"
+  ],
+  "dokumentasi/cibeet/dahim - layak huni": [
+    "depan.jpg"
+  ],
+  "dokumentasi/cibeet/engkas": [
+    "atas.jpg",
+    "bersama.jpg",
+    "dapur.jpg",
+    "depan.jpg",
+    "kamarmandi.jpg",
+    "kiri.jpg",
+    "tihang.jpg"
+  ],
+  "dokumentasi/cibeet/esih": [
+    "1.jpg",
+    "2.jpg",
+    "3.jpg",
+    "atas.jpg",
+    "depan.jpg",
+    "kamarmandi.jpg",
+    "lantai.jpg"
+  ],
+  "dokumentasi/cibeet/idi": [
+    "1.jpg",
+    "2.jpg",
+    "belakang.jpg",
+    "dalam.jpg",
+    "dapur.jpg",
+    "depan.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/cibeet/iim - pergantian": [
+    "atap.jpg",
+    "dalam.jpg",
+    "depan.jpg",
+    "kamarmandi.jpg",
+    "kanan.jpg",
+    "kiri.jpg"
+  ],
+  "dokumentasi/cibeet/mamah - pergantian": [
+    "1.jpg",
+    "2.jpg",
+    "3.jpg",
+    "4.jpg",
+    "belakang.jpg",
+    "dapur.jpg",
+    "depan.jpg",
+    "kamarmandi.jpg",
+    "kiri.jpg"
+  ],
+  "dokumentasi/cibeet/meli andalia": [
+    "atas.jpg",
+    "dalam.jpg",
+    "depan.jpg",
+    "kanan.jpg",
+    "kiri.jpg",
+    "lantai.jpg",
+    "pencahayaan.jpg"
+  ],
+  "dokumentasi/cibeet/ujang carma - pergantian": [
+    "belakang.jpg",
+    "dalam.jpg",
+    "depan.jpg",
+    "kamarmandi.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/cibeet/ujang nana": [
+    "1.jpg",
+    "2.jpg",
+    "3.jpg",
+    "atas.jpg",
+    "depan.jpg",
+    "kamarmandi.jpg",
+    "kanan.jpg",
+    "lantai.jpg"
+  ],
+  "dokumentasi/cibeet/ujang nanda": [
+    "1.jpg",
+    "atas.jpg",
+    "bersama.jpg",
+    "dalam.jpg",
+    "dapur.jpg",
+    "depan.jpg",
+    "kamarmandi.jpg",
+    "kanan.jpg",
+    "kiri.jpg",
+    "lantai.jpg"
+  ],
+  "dokumentasi/cibeet/ujang tata": [
+    "1.jpg",
+    "atas.jpg",
+    "belakang.jpg",
+    "depan.jpg",
+    "kanan-1.jpg",
+    "kanan.jpg",
+    "pencahayaan.jpg"
+  ],
+  "dokumentasi/cibeet/watini - pergantian": [
+    "1.jpg",
+    "2.jpg",
+    "atas.jpg",
+    "dapur.jpg",
+    "depan.jpg"
+  ],
+  "dokumentasi/cibeet/yana": [
+    "1.jpg",
+    "2.jpg",
+    "3.jpg",
+    "bersama.jpg",
+    "dalam.jpg",
+    "depan.jpg",
+    "kiri.jpg",
+    "lantai.jpg",
+    "pondasi.jpg"
+  ],
+  "dokumentasi/dana - susulan pic": [
+    "atap.jpg",
+    "dapur.jpg",
+    "depan.jpg",
+    "fotobareng.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/ecin - susulan pic": [
+    "belakang.jpg",
+    "bersama.jpg",
+    "dalam.jpg",
+    "depan.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/eha - layak huni - dibantu desa": [
+    "depan.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/emeh - layak huni - dibangun pribadi": [
+    "depan.jpeg"
+  ],
+  "dokumentasi/endang - layak huni - dibangun pribadi": [
+    "depan.jpg",
+    "kiri.jpg"
+  ],
   "dokumentasi/endang sarga": [
     "depan.jpg",
     "dalam.jpg",
     "bersama.jpg"
   ],
-  "dokumentasi/adang": [
-    "kanan.jpg",
+  "dokumentasi/engkus": [
+    "bersama.jpg",
     "depan.jpg",
-    "kiri.jpg",
-    "sanitasi.jpg",
-    "fotobareng.jpg"
-  ],
-  "dokumentasi/u odin - layak huni - dibangun pribadi": [
-    "kiri.jpg"
-  ],
-  "dokumentasi/toto tarmala - layak huni -dibangun pribadi": [
-    "depan.jpg",
-    "kiri.jpg"
-  ],
-  "dokumentasi/ujang timan - layak huni - dibangun pribadi": [
-    "depan.jpg",
-    "kiri.jpg"
-  ],
-  "dokumentasi/emeh - layak huni - dibangun pribadi": [
-    "depan.jpeg"
-  ],
-  "dokumentasi/tatan rustandi - layak huni - dibangun pribadi": [
-    "depan.jpg",
-    "kiri.jpg"
+    "kanan.jpg"
   ],
   "dokumentasi/hadi - layak huni - dibantu desa": [
     "belakang.jpg",
@@ -138,30 +249,9 @@
     "depan.jpg",
     "kiri.jpg"
   ],
-  "dokumentasi/saepuloh - layak huni - tidak ditempati": [
+  "dokumentasi/lalan - layak huni - dibangun pribadi": [
     "depan.jpg",
     "kiri.jpg"
-  ],
-  "dokumentasi/eha - layak huni - dibantu desa": [
-    "depan.jpg",
-    "kanan.jpg"
-  ],
-  "dokumentasi/warsa": [
-    "depan.jpg",
-    "kiri.jpg",
-    "dalam.jpg",
-    "bersama.jpg"
-  ],
-  "dokumentasi/ujang parman": [
-    "atas.jpg",
-    "belakang.jpg",
-    "depan.jpg",
-    "kanan.jpg"
-  ],
-  "dokumentasi/cadangan/deni - CP - kadus keempat": [
-    "depan.jpg",
-    "kiri.jpg",
-    "bersama.jpg"
   ],
   "dokumentasi/lampegan/andri - pergantian": [
     "dalam-atap-2.jpg",
@@ -315,5 +405,54 @@
     "depan.jpg",
     "kamar-mandi.jpg",
     "kerusakan-dinding.jpg"
+  ],
+  "dokumentasi/nurhayati - susulan pic": [
+    "bersama.jpg",
+    "depan.jpg",
+    "kanan.jpg",
+    "kiri.jpg"
+  ],
+  "dokumentasi/saepuloh - layak huni - tidak ditempati": [
+    "depan.jpg",
+    "kiri.jpg"
+  ],
+  "dokumentasi/saripudin": [
+    "atas.jpg",
+    "belakang.jpg",
+    "depan.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/tatan rustandi - layak huni - dibangun pribadi": [
+    "depan.jpg",
+    "kiri.jpg"
+  ],
+  "dokumentasi/toto tarmala - layak huni -dibangun pribadi": [
+    "depan.jpg",
+    "kiri.jpg"
+  ],
+  "dokumentasi/u odin - layak huni - dibangun pribadi": [
+    "kiri.jpg"
+  ],
+  "dokumentasi/ujang parman": [
+    "atas.jpg",
+    "belakang.jpg",
+    "depan.jpg",
+    "kanan.jpg"
+  ],
+  "dokumentasi/ujang timan - layak huni - dibangun pribadi": [
+    "depan.jpg",
+    "kiri.jpg"
+  ],
+  "dokumentasi/wahyu wibisana": [
+    "dalam.jpg",
+    "depan.jpg",
+    "kanan.jpg",
+    "kiri.jpg"
+  ],
+  "dokumentasi/warsa": [
+    "depan.jpg",
+    "kiri.jpg",
+    "dalam.jpg",
+    "bersama.jpg"
   ]
 }
