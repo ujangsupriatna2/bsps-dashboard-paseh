@@ -747,8 +747,8 @@
     "rw": null,
     "lat": -7.023,
     "lng": 107.5655,
-    "kategori": "data_acc",
-    "keterangan": "Backlog 2 Desil 3",
+    "kategori": "tidak_acc_layak_huni",
+    "keterangan": "Diganti oleh Tomi Harun Arasyid",
     "folderPath": "/dokumentasi/lampegan/oneng sumarni"
   },
   {
@@ -877,22 +877,6 @@
     "lng": 107.5658,
     "kategori": "tidak_acc_layak_huni",
     "keterangan": "Diganti oleh Cecep",
-    "folderPath": null
-  },
-  {
-    "id": "56",
-    "nama": "ONENG",
-    "nik": "-",
-    "kk": "-",
-    "alamat": "Kp Lampegan",
-    "kecamatan": "Ibun",
-    "desa": "Lampegan",
-    "rt": null,
-    "rw": null,
-    "lat": -7.0218,
-    "lng": 107.5642,
-    "kategori": "tidak_acc_layak_huni",
-    "keterangan": "Diganti oleh Tomi Harun Arasyid",
     "folderPath": null
   }
 ]
