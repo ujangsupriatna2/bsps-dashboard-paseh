@@ -95,3 +95,33 @@ Stage Summary:
 - VLM batch processing system created (scripts + API routes)
 - VLM analysis pending due to API rate limits
 - Cibeet data breakdown: 14 data_acc, 6 tidak_acc_layak_huni (5 diganti + 1 layak huni), 1 tidak_acc_tidak_melanjutkan
+
+---
+Task ID: 2
+Agent: main
+Task: Replace Ujang Parman with Herlina in Desa Loa, update Dahim keterangan
+
+Work Log:
+- Confirmed Dahim is included in "tidak masuk backlog perumahan" category
+- Updated Dahim (id 68) keterangan from "Layak Huni" to "Tidak Masuk Backlog Perumahan Desil 1"
+- Deleted Ujang Parman (was id 19) from Desa Loa - user said "ujang parman diganti herlina, jadi ujang parman dihapus aja"
+- Downloaded Herlina's photo folder from Google Drive (folder ID: 1OpXdwIhcWlPPRCLPNOQzihHoXi5IwN-L)
+  - 2 photos: depan.jpg and kiri.jpg (originally had GUID filenames)
+- Copied Herlina photos to /dokumentasi/herlina - pergantian/
+- Added HERLINA entry (id 76) to bsps-data.json as data_acc with keterangan "Pengganti Ujang Parman"
+  - Same address as Ujang Parman: KP. Lengo RT 004 RW 001
+  - NIK/KK set to "-" (placeholder - VLM rate-limited, couldn't extract from photos)
+- Re-indexed all entry IDs sequentially (1-76)
+- Removed Ujang Parman photos from /dokumentasi/ujang parman/
+- Updated photo-manifest.json: removed ujang parman, added herlina - pergantian
+- Verified all API endpoints return correct data
+- VLM analysis attempted multiple times but consistently rate-limited (429 errors)
+- Pushed all changes to git (commit 59d3c1e)
+
+Stage Summary:
+- Total entries: 76 (Loa: 32, Lampegan: 23, Cibeet: 21)
+- Loa breakdown: 20 data_acc (incl. Herlina), 11 tidak_acc_layak_huni, 1 tidak_acc_tidak_melanjutkan
+- Ujang Parman completely removed from data and photos
+- Herlina added with placeholder NIK/KK - needs VLM extraction when rate limit resets
+- Dahim keterangan updated to "Tidak Masuk Backlog Perumahan Desil 1"
+- VLM analysis for Herlina's photos PENDING (rate limited)
