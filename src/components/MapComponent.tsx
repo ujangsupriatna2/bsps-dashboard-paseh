@@ -408,6 +408,24 @@ export default function MapComponent({
     }
   }, [selectedId, markersMap]);
 
+  // React to center/zoom prop changes (e.g. when desa tab switches)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+
+    // Only fly if the map is not already at the target
+    const currentCenter = map.getCenter();
+    const currentZoom = map.getZoom();
+    const dist = Math.sqrt(
+      Math.pow(currentCenter.lat - center[0], 2) +
+      Math.pow(currentCenter.lng - center[1], 2)
+    );
+
+    if (dist > 0.01 || currentZoom !== zoom) {
+      map.flyTo(center, zoom, { duration: 1.0 });
+    }
+  }, [center, zoom, mapReady]);
+
   // Handle resize
   useEffect(() => {
     const handleResize = () => {

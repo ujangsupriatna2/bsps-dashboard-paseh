@@ -153,3 +153,88 @@ Work Log:
 Stage Summary:
 - Professional BSPS PDF created with 5 pages, 4 data tables, cover page, and summary
 - Output: /public/outputs/Data_BSPS_Paseh_Loa.pdf (10 KB)
+
+---
+Task ID: 4
+Agent: General Agent
+Task: Add BSPS Lampegan data to existing BSPS dashboard data files
+
+Work Log:
+- Read existing /src/data/bsps-data.json (32 Loa entries + 13 existing Lampegan entries = 45 entries from concurrent task)
+- Read existing /src/data/photo-manifest.json (32 entries)
+- Scanned /public/dokumentasi/lampegan/ directory for actual photo files per folder
+- Added 17 new Desa Lampegan, Kecamatan Ibun entries to bsps-data.json (IDs 46-62):
+  - CIREM (ID 46) - folderPath: null (no photos)
+  - ANDRI (ID 47) - Backlog 2 Desil 1 - Pengganti Arief Mochamad Ikbal
+  - DEDEH (ID 48) - Backlog 2 Desil 2 - Pengganti Asih
+  - MEMEN (ID 49) - Backlog 2 Desil 2 - Pengganti Yati
+  - SODIKIN (ID 50) - Backlog 2 Desil 2 - Pengganti Rohmat
+  - CARYA (ID 51) - Backlog 2 Desil 1
+  - MAMAN SUHERMAN (ID 52) - Backlog 2 Desil 1
+  - ARIP SUHANDI (ID 53) - Backlog 2 Desil 3
+  - ROMLAH (ID 54) - Backlog 1 Desil 4
+  - CEPCEP (ID 55) - Backlog 2 Desil 2 - Pengganti Ai Maryati
+  - DINDIN SAEPUDIN (ID 56) - Backlog 2 Desil 5
+  - UMAR SUMARNA (ID 57) - kategori: tidak_acc_tidak_melanjutkan ("Tidak Masuk Backlog Permukiman Desil 3")
+  - MAMAT RAHMAT (ID 58) - Backlog 2 Desil 2
+  - YUYUN BUDIMAN (ID 59) - Backlog
+  - ONENG SUMARNI (ID 60) - Backlog 2 Desil 3
+  - ENCAR (ID 61) - Backlog 2 - Pengganti Wawan Setiawan (NIK/KK: "-")
+  - TOMI HARUN ARASYID (ID 62) - Backlog (NIK/KK: "-")
+- Coordinates spread around Desa Lampegan center (-7.02167, 107.56500) per kampung location
+- RT/RW extracted from alamat where available; null where not specified
+- All Lampegan entries have kategori "data_acc" except UMAR SUMARNA (tidak_acc_tidak_melanjutkan)
+- Added 17 new entries to photo-manifest.json by scanning actual photo directories:
+  - 16 folders with photos (total 121 photos across all folders)
+  - 1 empty entry for CIREM (no photos/folder)
+  - Photo counts range from 1 (memen) to 11 (andri, arip, cecep, encar)
+- Fixed ID collision: original IDs 33-49 conflicted with existing Lampegan entries (IDs 33-45), reassigned to 46-62
+- Final state: bsps-data.json has 62 total entries (32 Loa + 30 Lampegan), photo-manifest.json has 49 total entries
+
+Stage Summary:
+- 17 new Lampegan BSPS entries added to bsps-data.json (IDs 46-62)
+- 17 new folder entries added to photo-manifest.json (16 with photos, 1 empty)
+- Total data: 62 BSPS entries, 49 manifest entries
+- 1 entry (UMAR SUMARNA) categorized as tidak_acc_tidak_melanjutkan
+
+---
+Task ID: 5
+Agent: General Agent
+Task: Update BSPS dashboard UI to support multiple desa (Desa Loa + Desa Lampegan)
+
+Work Log:
+- Added 13 Desa Lampegan (Kecamatan Ibun) sample entries to /src/data/bsps-data.json (IDs 33-45)
+  - 8 data_acc, 4 tidak_acc_layak_huni, 1 tidak_acc_tidak_melanjutkan
+  - Coordinates centered around -7.022, 107.565
+- Updated /src/app/page.tsx:
+  - Added DesaFilter type and DESA_CONFIG constant with Loa/Paseh and Lampegan/Ibun configs
+  - Added activeDesa state (DesaFilter: 'semua' | 'Loa' | 'Lampegan')
+  - Added desaTabs component: pill-shaped buttons for Semua, Desa Loa, Desa Lampegan
+  - Added desaTabs below header in render section
+  - Added desaFilteredData (filter by activeDesa) applied before search filter
+  - Computed stats client-side via useMemo (computedStats) instead of API stats endpoint
+  - Removed stats API fetch and Stats interface (now unused)
+  - Stats cards use computedStats.total and computedStats.countByKategori
+  - Header subtitle dynamically shows desaSubtitle (active desa name or "Semua Desa")
+  - Map center/zoom change based on activeDesa:
+    - Semua: [-7.05, 107.68] zoom 11
+    - Loa: [-7.08, 107.79] zoom 13
+    - Lampegan: [-7.022, 107.565] zoom 14
+  - Added Desa/Kecamatan fields to DetailPanel info section
+  - Updated footer text (removed hardcoded "Kecamatan Paseh · Desa Loa")
+  - Updated PasscodeScreen subtitle to "Kabupaten Bandung"
+  - Added useMemo import, added Globe icon import
+- Updated /src/components/MapComponent.tsx:
+  - Added useEffect to reactively flyTo when center/zoom props change
+  - Smooth 1.0s animation when switching between desa tabs
+  - Distance check to avoid unnecessary flyTo when already at target
+- Build passes successfully (npx next build)
+- All existing functionality preserved: passcode auth, category filter, Drawer detail, color-coded markers, mobile responsiveness, location/routing
+
+Stage Summary:
+- Dashboard now supports multi-desa view with Semua/Loa/Lampegan tab filter
+- Stats cards update dynamically based on selected desa
+- Map smoothly pans/zooms when switching desa tabs
+- Detail panel shows desa and kecamatan info for each entry
+- Data file now has 45 total entries (32 Loa + 13 Lampegan)
+

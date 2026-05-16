@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +25,7 @@ import {
   ChevronRight, ChevronDown, ChevronUp, Building2,
   CheckCircle2, Clock, XCircle, Camera, X, ImageOff,
   Navigation, LocateFixed, Route, ExternalLink, Lock, ShieldCheck,
-  ArrowLeft, List, Map, Eye, EyeOff,
+  ArrowLeft, List, Map, Eye, EyeOff, Globe,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -57,14 +57,6 @@ interface BspsEntry {
   lng: number;
   kategori: string;
   keterangan: string | null;
-}
-
-interface Stats {
-  total: number;
-  countByKategori: Record<string, number>;
-  countByDesa: Record<string, number>;
-  countByKecamatan: Record<string, number>;
-  kategoriPerDesa: Record<string, Record<string, number>>;
 }
 
 interface DokumentasiPhoto {
@@ -118,6 +110,25 @@ const MARKER_COLORS: Record<string, string> = {
   tidak_acc_tidak_melanjutkan: '#ef4444',
 };
 
+// ─── Desa Config ──────────────────────────────────────────────────────────────
+
+type DesaFilter = 'semua' | 'Loa' | 'Lampegan';
+
+const DESA_CONFIG: Record<string, { label: string; kecamatan: string; center: [number, number]; zoom: number }> = {
+  Loa: {
+    label: 'Desa Loa',
+    kecamatan: 'Paseh',
+    center: [-7.08, 107.79],
+    zoom: 13,
+  },
+  Lampegan: {
+    label: 'Desa Lampegan',
+    kecamatan: 'Ibun',
+    center: [-7.022, 107.565],
+    zoom: 14,
+  },
+};
+
 // ─── Passcode Screen ─────────────────────────────────────────────────────────
 
 function PasscodeScreen({ onAccess }: { onAccess: () => void }) {
@@ -159,7 +170,7 @@ function PasscodeScreen({ onAccess }: { onAccess: () => void }) {
           <img src="/favicon.svg" alt="BSPS" className="w-20 h-20 rounded-2xl shadow-xl mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900">Dashboard BSPS</h1>
           <p className="text-sm text-gray-500 mt-1">Pemetaan Bantuan Stimulan Perumahan Swadaya</p>
-          <p className="text-xs text-gray-400 mt-0.5">Kecamatan Paseh · Desa Loa · Kabupaten Bandung</p>
+          <p className="text-xs text-gray-400 mt-0.5">Kabupaten Bandung</p>
         </div>
 
         <Card className="shadow-xl border-gray-200">
@@ -345,6 +356,14 @@ function DetailPanel({
           </div>
         )}
         <div className="flex justify-between gap-2">
+          <span className="text-gray-400 shrink-0">Desa</span>
+          <span className="text-gray-700">{entry.desa}</span>
+        </div>
+        <div className="flex justify-between gap-2">
+          <span className="text-gray-400 shrink-0">Kecamatan</span>
+          <span className="text-gray-700">{entry.kecamatan}</span>
+        </div>
+        <div className="flex justify-between gap-2">
           <span className="text-gray-400 shrink-0">Koordinat</span>
           <span className="font-mono text-[10px] text-gray-700">
             {entry.lat.toFixed(6)}, {entry.lng.toFixed(6)}
@@ -461,11 +480,11 @@ export default function DashboardPage() {
 
   // Data state
   const [data, setData] = useState<BspsEntry[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [activeDesa, setActiveDesa] = useState<DesaFilter>('semua');
 
   // Documentation state
   const [dokumentasi, setDokumentasi] = useState<DokumentasiData | null>(null);
@@ -507,16 +526,11 @@ export default function DashboardPage() {
       if (activeFilter) params.set('kategori', activeFilter);
       if (searchQuery) params.set('search', searchQuery);
 
-      const [dataRes, statsRes] = await Promise.all([
-        fetch(`/api/bsps?${params.toString()}`),
-        fetch('/api/bsps/stats'),
-      ]);
+      const dataRes = await fetch(`/api/bsps?${params.toString()}`);
 
       const dataJson = await dataRes.json();
-      const statsJson = await statsRes.json();
 
       setData(dataJson.data || []);
-      setStats(statsJson);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     } finally {
@@ -615,7 +629,14 @@ export default function DashboardPage() {
 
   const selectedEntry = data.find((d) => d.id === selectedId);
 
-  const filteredData = data.filter((item) => {
+  // Desa-filtered data
+  const desaFilteredData = data.filter((item) => {
+    if (activeDesa === 'semua') return true;
+    return item.desa === activeDesa;
+  });
+
+  // Search-filtered data (applied on top of desa filter)
+  const filteredData = desaFilteredData.filter((item) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
@@ -624,6 +645,28 @@ export default function DashboardPage() {
       (item.alamat && item.alamat.toLowerCase().includes(q))
     );
   });
+
+  // Compute stats from desa-filtered data
+  const computedStats = useMemo(() => {
+    const source = desaFilteredData;
+    const total = source.length;
+    const countByKategori: Record<string, number> = {};
+    for (const item of source) {
+      countByKategori[item.kategori] = (countByKategori[item.kategori] || 0) + 1;
+    }
+    return { total, countByKategori };
+  }, [desaFilteredData]);
+
+  // Map center/zoom based on desa
+  const mapCenter: [number, number] = activeDesa === 'semua'
+    ? [-7.05, 107.68]
+    : DESA_CONFIG[activeDesa]?.center || [-7.08, 107.79];
+  const mapZoom = activeDesa === 'semua' ? 11 : (DESA_CONFIG[activeDesa]?.zoom || 13);
+
+  // Desa subtitle text
+  const desaSubtitle = activeDesa === 'semua'
+    ? 'Semua Desa'
+    : `${DESA_CONFIG[activeDesa]?.label || activeDesa} · Kec. ${DESA_CONFIG[activeDesa]?.kecamatan || ''}`;
 
   // ─── Auth gate ──────────────────────────────────────────────────
 
@@ -672,6 +715,42 @@ export default function DashboardPage() {
     </div>
   );
 
+  // ─── Desa Tabs ─────────────────────────────────────────────────
+
+  const desaTabs = (
+    <div className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none">
+      <button
+        type="button"
+        className={cn(
+          'shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border',
+          activeDesa === 'semua'
+            ? 'bg-green-600 text-white border-green-600 shadow-md'
+            : 'bg-white text-gray-600 border-gray-200 hover:border-green-300 hover:text-green-700',
+        )}
+        onClick={() => setActiveDesa('semua')}
+      >
+        <Globe className="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" />
+        Semua
+      </button>
+      {Object.entries(DESA_CONFIG).map(([key, cfg]) => (
+        <button
+          key={key}
+          type="button"
+          className={cn(
+            'shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border',
+            activeDesa === key
+              ? 'bg-green-600 text-white border-green-600 shadow-md'
+              : 'bg-white text-gray-600 border-gray-200 hover:border-green-300 hover:text-green-700',
+          )}
+          onClick={() => setActiveDesa(key as DesaFilter)}
+        >
+          <MapPin className="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" />
+          {cfg.label}
+        </button>
+      ))}
+    </div>
+  );
+
   // ─── Stats Cards ─────────────────────────────────────────────────
 
   const statsCards = (
@@ -689,35 +768,34 @@ export default function DashboardPage() {
             <div className="p-1.5 sm:p-2 rounded-lg bg-gray-100">
               <Users className="w-4 h-4 text-gray-700" />
             </div>
-            <span className="text-xl sm:text-3xl font-bold text-gray-700">{stats?.total || 0}</span>
+            <span className="text-xl sm:text-3xl font-bold text-gray-700">{computedStats.total}</span>
           </div>
           <p className="text-[10px] sm:text-sm font-medium mt-1 sm:mt-2 text-gray-700">Total Data</p>
         </CardContent>
       </Card>
-      {stats?.countByKategori &&
-        Object.entries(KATEGORI_CONFIG).map(([key, config]) => {
-          const count = stats.countByKategori[key] || 0;
-          return (
-            <Card
-              key={key}
-              className={cn(
-                'cursor-pointer transition-all duration-200 hover:shadow-md border',
-                activeFilter === key ? `${config.bgColor} ${config.borderColor} shadow-md` : 'hover:border-gray-300',
-              )}
-              onClick={() => setActiveFilter(activeFilter === key ? null : key)}
-            >
-              <CardContent className="p-2.5 sm:p-4">
-                <div className="flex items-center justify-between">
-                  <div className={cn('p-1.5 sm:p-2 rounded-lg', config.bgColor)}>
-                    <div className={config.color}>{config.icon}</div>
-                  </div>
-                  <span className={cn('text-xl sm:text-3xl font-bold', config.color)}>{count}</span>
+      {Object.entries(KATEGORI_CONFIG).map(([key, config]) => {
+        const count = computedStats.countByKategori[key] || 0;
+        return (
+          <Card
+            key={key}
+            className={cn(
+              'cursor-pointer transition-all duration-200 hover:shadow-md border',
+              activeFilter === key ? `${config.bgColor} ${config.borderColor} shadow-md` : 'hover:border-gray-300',
+            )}
+            onClick={() => setActiveFilter(activeFilter === key ? null : key)}
+          >
+            <CardContent className="p-2.5 sm:p-4">
+              <div className="flex items-center justify-between">
+                <div className={cn('p-1.5 sm:p-2 rounded-lg', config.bgColor)}>
+                  <div className={config.color}>{config.icon}</div>
                 </div>
-                <p className={cn('text-[10px] sm:text-sm font-medium mt-1 sm:mt-2', config.color)}>{config.label}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
+                <span className={cn('text-xl sm:text-3xl font-bold', config.color)}>{count}</span>
+              </div>
+              <p className={cn('text-[10px] sm:text-sm font-medium mt-1 sm:mt-2', config.color)}>{config.label}</p>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 
@@ -936,7 +1014,7 @@ export default function DashboardPage() {
               <img src="/favicon.svg" alt="BSPS" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl shadow-md" />
               <div>
                 <h1 className="text-sm sm:text-xl font-bold text-gray-900">Dashboard BSPS</h1>
-                <p className="text-[10px] sm:text-sm text-gray-500">Kecamatan Paseh · Desa Loa</p>
+                <p className="text-[10px] sm:text-sm text-gray-500">{desaSubtitle}</p>
               </div>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2">
@@ -961,6 +1039,11 @@ export default function DashboardPage() {
           </div>
         </div>
       </header>
+
+      {/* Desa Tabs */}
+      <div className="max-w-[1600px] mx-auto w-full px-3 sm:px-6 pt-2 sm:pt-3 shrink-0">
+        {desaTabs}
+      </div>
 
       {/* Stats Cards */}
       <div className="max-w-[1600px] mx-auto w-full px-3 sm:px-6 pt-3 sm:pt-4 shrink-0">
@@ -1020,8 +1103,8 @@ export default function DashboardPage() {
 
             <MapComponent
               markers={mapMarkers}
-              center={[-7.08, 107.79]}
-              zoom={13}
+              center={mapCenter}
+              zoom={mapZoom}
               selectedId={selectedId}
               onSelect={handleSelect}
               userLocation={userLocation}
@@ -1095,7 +1178,7 @@ export default function DashboardPage() {
       <footer className="mt-auto bg-white border-t py-2.5 sm:py-3 shrink-0">
         <div className="max-w-[1600px] mx-auto px-3 sm:px-6">
           <p className="text-[10px] sm:text-xs text-center text-gray-400">
-            Dashboard Pemetaan BSPS · Kecamatan Paseh · Desa Loa · Kabupaten Bandung · {new Date().getFullYear()}
+            Dashboard Pemetaan BSPS · Kabupaten Bandung · {new Date().getFullYear()}
           </p>
         </div>
       </footer>

@@ -53,3 +53,7 @@ server.log
 # Skills directory
 /skills/.env
 .env.local
+gdrive_lampegan/
+gdrive_lampegan2/
+upload/
+generate_bsps_*.py
